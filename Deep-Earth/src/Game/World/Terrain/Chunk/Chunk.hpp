@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../Block/Raw/RawBlock.hpp"
+#include "../Node/Raw/Node.hpp"
 #include "../Light/Light.hpp"
 #include "../../../../Engine/OpenGL/VertexArray.hpp"
 #include "../../../../Engine/Renderer/Shader/Shader3D.hpp"
-#include "../Block/BlockManager.hpp"
+#include "../Node/NodeManager.hpp"
 #include "../../../../Engine/Util/Math.hpp"
 #include <iostream>
 
@@ -15,22 +15,22 @@ class Chunk
 {
 public:
 
-	Chunk(BlockManager& blockManager, glm::ivec3 position);
-	Chunk(BlockManager& blockManager, std::vector<RawBlock>& m_Blocks, glm::ivec3& position);
+	Chunk(NodeManager& nodeManager, glm::ivec3 position);
+	Chunk(NodeManager& nodeManager, std::vector<Node>& m_Blocks, glm::ivec3& position);
 
 	void render(engine::Shader3D& shader);
 
-	RawBlock& getBlock(glm::ivec3 position);
-	void setBlock(glm::ivec3 position, uint id);
+	Node& getNode(glm::ivec3 position);
+	void setNode(glm::ivec3 position, uint id);
 
 private:
 
-	void buildMesh(BlockManager& blockManager);
+	void buildMesh(NodeManager& nodeManager);
 
 	std::unique_ptr<engine::gl::VertexArray> m_VertexArray;
 
 	glm::mat4 m_TransformationMatrix;
 
-	std::vector<RawBlock> m_Blocks = std::vector<RawBlock>(CHUNK_VOLUME);
+	std::vector<Node> m_Nodes = std::vector<Node>(CHUNK_VOLUME);
 	std::vector<Light> m_LightMap = std::vector<Light>(CHUNK_VOLUME);
 };

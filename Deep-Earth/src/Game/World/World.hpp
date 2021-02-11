@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../Engine/Renderer/Renderer.hpp"
-#include "Terrain/Block/BlockManager.hpp"
+#include "Terrain/Node/NodeManager.hpp"
 #include "Terrain/Terrain.hpp"
 #include "../Entity/Player.hpp"
 

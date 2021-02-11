@@ -2,7 +2,7 @@
 
 #include "../../../Engine/Renderer/Model/Texture/Texture.hpp"
 #include "Chunk/ChunkManager.hpp"
-#include "Block/BlockManager.hpp"
+#include "Node/NodeManager.hpp"
 
 class Terrain
 {
@@ -15,7 +15,7 @@ public:
 
 private:
 
-	BlockManager m_BlockManager;
+	NodeManager m_NodeManager;
 	ChunkManager m_ChunkManager;
 
 	engine::Texture m_Atlas;

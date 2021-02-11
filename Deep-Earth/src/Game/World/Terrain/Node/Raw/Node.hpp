@@ -3,10 +3,10 @@
 #include <memory>
 #include "../Type/BaseBlockType.hpp"
 
-struct RawBlock
+struct Node
 {
-	RawBlock();
-	RawBlock(byte id);
+	Node();
+	Node(byte id);
 
 	byte m_ID;
 

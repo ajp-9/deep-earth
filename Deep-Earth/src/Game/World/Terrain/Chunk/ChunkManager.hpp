@@ -6,7 +6,7 @@ class ChunkManager
 {
 public:
 
-	ChunkManager(BlockManager& blockManager);
+	ChunkManager(NodeManager& nodeManager);
 
 	void render(engine::Shader3D& shader);
 	void update();

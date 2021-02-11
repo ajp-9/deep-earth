@@ -10,8 +10,6 @@
 #include "Shader/Shader3D.hpp"
 #include "../Util/Profile.hpp"
 
-#include "../../Game/World/Terrain/Block/Type/Block/GrassType.hpp"
-
 namespace engine
 {
 	Renderer::Renderer()

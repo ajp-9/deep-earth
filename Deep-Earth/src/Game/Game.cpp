@@ -1,7 +1,7 @@
 #include "Game.hpp"
 
-#include "World/Terrain/Block/BlockManager.hpp"
-#include "World/Terrain/Block/Type/Block/GrassType.hpp"
+#include "World/Terrain/Node/NodeManager.hpp"
+#include "World/Terrain/Node/Type/Block/GrassType.hpp"
 
 #define PROFILE
 #include "../Engine/Util/Profile.hpp"
