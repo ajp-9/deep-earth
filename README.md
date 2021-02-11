@@ -1,2 +1,1 @@
-# deep-earth
-Deep Earth
+# Deep Earth
