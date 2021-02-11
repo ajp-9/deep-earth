@@ -1,0 +1,84 @@
+#include "BaseBlockType.hpp"
+
+std::vector<engine::Vertex> BaseBlockType::getVertices(glm::ivec3 localTransform, bool front, bool frontRight, bool back, bool frontLeft, bool top, bool bottom)
+{
+	return m_Vertices;
+}
+
+std::vector<uint> BaseBlockType::getIndices(uint greatestIndex, bool front, bool frontRight, bool back, bool frontLeft, bool top, bool bottom)
+{
+	std::vector<uint> tempIndices = m_Indices;
+
+	for (auto& i : tempIndices)
+		i += greatestIndex;
+
+	return tempIndices;
+}
+
+void BaseBlockType::createMesh()
+{
+	std::vector<engine::Vertex> vertices;
+
+	std::vector vertexPositions = createVertexPositions();
+	std::vector uvs = createUVs();
+
+	vertices.reserve(vertexPositions.size() / 3);
+
+	uint vtxCount = 0;
+	uint uvCount = 0;
+	for (int i = 0; i < vertexPositions.size() / 3; i++)
+	{
+		engine::Vertex vertex;
+		vertex.m_Position.x = vertexPositions.at(vtxCount++);
+		vertex.m_Position.y = vertexPositions.at(vtxCount++);
+		vertex.m_Position.z = vertexPositions.at(vtxCount++);
+
+		vertex.m_UV.x = uvs.at(uvCount++);
+		vertex.m_UV.y = uvs.at(uvCount++);
+
+		vertices.emplace_back(vertex);
+	}
+
+	m_Vertices = vertices;
+	m_Indices = createIndices();
+
+	createFaces();
+}
+
+std::vector<float> BaseBlockType::buildUV(int xT, int yT, int xS, int yS, int xB, int yB)
+{
+	float a = .0625f;
+	std::vector<float> uvs =
+	{
+		0 + (a * xS), 0 + (a * yS),
+		.0625f + (a * xS), 0 + (a * yS),
+		.0625f + (a * xS), .0625f + (a * yS),
+		0 + (a * xS), .0625f + (a * yS),
+
+		0 + (a * xS), 0 + (a * yS),
+		.0625f + (a * xS), 0 + (a * yS),
+		.0625f + (a * xS), .0625f + (a * yS),
+		0 + (a * xS), .0625f + (a * yS),
+
+		0 + (a * xS), 0 + (a * yS),
+		.0625f + (a * xS), 0 + (a * yS),
+		.0625f + (a * xS), .0625f + (a * yS),
+		0 + (a * xS), .0625f + (a * yS),
+
+		0 + (a * xS), 0 + (a * yS),
+		.0625f + (a * xS), 0 + (a * yS),
+		.0625f + (a * xS), .0625f + (a * yS),
+		0 + (a * xS), .0625f + (a * yS),
+
+		0 + (a * xT), 0 + (a * yT),
+		.0625f + (a * xT), 0 + (a * yT),
+		.0625f + (a * xT), .0625f + (a * yT),
+		0 + (a * xT), .0625f + (a * yT),
+
+		0 + (a * xB), 0 + (a * yB),
+		.0625f + (a * xB), 0 + (a * yB),
+		.0625f + (a * xB), .0625f + (a * yB),
+		0 + (a * xB), .0625f + (a * yB)
+	};
+	return uvs;
+}
