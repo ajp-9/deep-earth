@@ -4,7 +4,7 @@
 #include "Type/BaseBlockType.hpp"
 #include "Raw/Node.hpp"
 
-namespace block
+namespace node
 {
 	enum
 	{

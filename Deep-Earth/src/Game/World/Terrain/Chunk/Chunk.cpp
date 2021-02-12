@@ -6,9 +6,9 @@
 Chunk::Chunk(NodeManager& nodeManager, glm::ivec3 position)
 	: m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE))
 {
-	setNode(glm::ivec3(0), block::sand);
-	//for (int x = 0; x < CHUNK_VOLUME; x++)
-	//	m_Blocks.at(x) = blockManager.getRawBlock(block::dirt);
+	//setNode(glm::ivec3(0), node::sand);
+	for (int x = 0; x < CHUNK_VOLUME; x++)
+		m_Nodes.at(x) = nodeManager.getNode(node::grass);
 
 	buildMesh(nodeManager);
 }
@@ -31,7 +31,7 @@ inline Node& Chunk::getNode(glm::ivec3 position)
 
 	if (flat >= CHUNK_VOLUME || flat < 0)
 	{
-		std::cout << "ERROR::<Chunk::getBlock> Out of bounds exception!\n";
+		std::cout << "ERROR::<Chunk::getNode> Out of bounds exception!\n";
 	}
 	else
 	{
@@ -45,7 +45,7 @@ inline void Chunk::setNode(glm::ivec3 position, uint id)
 
 	if (flat >= CHUNK_VOLUME || flat < 0)
 	{
-		std::cout << "ERROR::<Chunk::setBlock> Out of bounds exception!\n";
+		std::cout << "ERROR::<Chunk::setNode> Out of bounds exception!\n";
 	}
 	else
 	{
@@ -63,12 +63,10 @@ void Chunk::buildMesh(NodeManager& nodeManager)
 	for (auto& b : m_Nodes)
 	{
 		++indx;
-		if (b.m_ID == block::air)
+		if (b.m_ID == node::air)
 			continue;
 		
 		glm::ivec3 bPosition = engine::math::DimensionalAndFlat::get3DFromFlat(indx, CHUNK_SIZE);
-
-		bool front = false, frontRight = false, back = false, frontLeft = false, top = false, bottom = false;
 
 		// front
 		// front-right
@@ -80,7 +78,7 @@ void Chunk::buildMesh(NodeManager& nodeManager)
 		//std::cout << engine::math::DimensionalAndFlat::getFlatFrom3D(glm::ivec3(31, 31, 31), 32) << std::endl;
 		//std::cout << engine::math::DimensionalAndFlat::get3DFromFlat(32767, 32).x << ", " << engine::math::DimensionalAndFlat::get3DFromFlat(32767, 32).y << ", " << engine::math::DimensionalAndFlat::get3DFromFlat(32767, 32).z << std::endl;
 
-		std::vector<engine::Vertex> bVertices = nodeManager.getNodeType(b.m_ID)->getVertices(bPosition); // you have to transform by sending the coords thru getVtx
+		std::vector<engine::Vertex> bVertices = nodeManager.getNodeType(b.m_ID)->getVertices(bPosition);
 		std::vector<uint> bIndices = nodeManager.getNodeType(b.m_ID)->getIndices(greatestIndex);
 
 		vertices.insert(vertices.end(), bVertices.begin(), bVertices.end());

@@ -8,7 +8,7 @@ struct Node
 	Node();
 	Node(byte id);
 
-	byte m_ID;
+	byte m_ID; 
 
 private:
 
