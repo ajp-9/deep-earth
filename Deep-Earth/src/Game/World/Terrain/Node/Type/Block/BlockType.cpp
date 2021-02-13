@@ -4,6 +4,82 @@
 
 #include "../../../../../../Engine/Util/Math.hpp"
 
+std::pair<std::vector<engine::Vertex>, std::vector<uint>> BlockType::getVerticesWIndices(uint ownID, glm::ivec3& localTransform, uint greatestIndex, bool hide_front, bool hide_frontRight, bool hide_back, bool hide_frontLeft, bool hide_top, bool hide_bottom)
+{
+    std::vector<engine::Vertex> tempVertices;
+    std::vector<uint> tempIndices;
+
+    uint faces = 0;
+
+    if (hide_front && hide_frontRight && hide_back && hide_frontLeft && hide_top && hide_bottom)
+    {
+        return std::make_pair(tempVertices, tempIndices);
+    }
+    if (!hide_front && !hide_frontRight && !hide_back && !hide_frontLeft && !hide_top && !hide_bottom)
+    {
+        tempVertices = m_Vertices;
+        faces += 6;
+    }
+    else
+    {
+        if (!hide_front)
+        {
+            tempVertices.insert(tempVertices.end(), m_VerticesFrontFace.begin(), m_VerticesFrontFace.end());
+            faces++;
+        }
+        if (!hide_frontRight)
+        {
+            tempVertices.insert(tempVertices.end(), m_VerticesFrontRightFace.begin(), m_VerticesFrontRightFace.end());
+            faces++;
+        }
+        if (!hide_back)
+        {
+            tempVertices.insert(tempVertices.end(), m_VerticesBackFace.begin(), m_VerticesBackFace.end());
+            faces++;
+        }
+        if (!hide_frontLeft)
+        {
+            tempVertices.insert(tempVertices.end(), m_VerticesFrontLeftFace.begin(), m_VerticesFrontLeftFace.end());
+            faces++;
+        }
+        if (!hide_top)
+        {
+            tempVertices.insert(tempVertices.end(), m_VerticesTopFace.begin(), m_VerticesTopFace.end());
+            faces++;
+        }
+        if (!hide_bottom)
+        {
+            tempVertices.insert(tempVertices.end(), m_VerticesBottomFace.begin(), m_VerticesBottomFace.end());
+            faces++;
+        }
+    }
+
+    for (auto& v : tempVertices)
+    {
+        v.m_Position.x += localTransform.x;
+        v.m_Position.y += localTransform.y;
+        v.m_Position.z += localTransform.z;
+    }
+
+    greatestIndex++;
+
+    // tempIndices alone specifices just 1 face so when
+    // adding the faces' indices you need to increase it
+    for (int i = 0; i < faces; i++)
+    {
+        std::vector<uint> quickTempIndicesFace = m_IndicesFace;
+        for (auto& q : quickTempIndicesFace)
+        {
+            // 4 is greatest index for 1 * by the particular iteration
+            q += (i * 4) + greatestIndex;
+        }
+
+        tempIndices.insert(tempIndices.end(), quickTempIndicesFace.begin(), quickTempIndicesFace.end());
+    }
+
+    return std::make_pair(tempVertices, tempIndices);
+}
+
 std::vector<engine::Vertex> BlockType::getVertices(glm::ivec3 localTransform, bool front, bool frontRight, bool back, bool frontLeft, bool top, bool bottom)
 {
     std::vector<engine::Vertex> tempVertices;
@@ -34,7 +110,7 @@ std::vector<engine::Vertex> BlockType::getVertices(glm::ivec3 localTransform, bo
         if (top)
             tempVertices.insert(tempVertices.end(), m_VerticesTopFace.begin(), m_VerticesTopFace.end());
 
-        if (top)
+        if (bottom)
             tempVertices.insert(tempVertices.end(), m_VerticesBottomFace.begin(), m_VerticesBottomFace.end());
     }
 
@@ -77,22 +153,22 @@ std::vector<uint> BlockType::getIndices(uint greatestIndex, bool front, bool fro
 
         if (top)
             faces++;
-
     }
-
-    // you have to fix this
 
     greatestIndex++;
 
+    // tempIndices alone specifices just 1 face so when
+    // adding the faces' indices you need to increase it
     for (int i = 0; i < faces; i++)
     {
         std::vector<uint> quickTempIndicesFace = m_IndicesFace;
         for (auto& q : quickTempIndicesFace)
         {
+            // 4 is greatest index for 1 * by the particular iteration
             q += (i * 4) + greatestIndex;
         }
-        tempIndices.insert(tempIndices.end(), quickTempIndicesFace.begin(), quickTempIndicesFace.end());
 
+        tempIndices.insert(tempIndices.end(), quickTempIndicesFace.begin(), quickTempIndicesFace.end());
     }
 
     return tempIndices;

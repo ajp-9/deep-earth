@@ -4,7 +4,10 @@
 
 struct AirType : public BlockType
 {
-	AirType() {}
+	AirType()
+	{
+		doesOcclude = false;
+	}
 
 private:
 

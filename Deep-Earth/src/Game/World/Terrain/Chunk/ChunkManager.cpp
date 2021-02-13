@@ -2,12 +2,17 @@
 
 #include "../Node/NodeManager.hpp"
 
+#define PROFILE
+#include "../../../../Engine/Util/Profile.hpp"
+
 ChunkManager::ChunkManager(NodeManager& nodeManager)
 {
-	for (int x = 0; x < 1; x++)
-		for (int y = 0; y < 1; y++)
-			for (int z = 0; z < 1; z++)
+	for (int x = 0; x < 10; x++)
+		for (int y = 0; y < 10; y++)
+			for (int z = 0; z < 10; z++)
+			{
 				chunks.emplace_back(std::make_unique<Chunk>(nodeManager, glm::ivec3(x, y, z)));
+			}
 }
 
 void ChunkManager::render(engine::Shader3D& shader)

@@ -1,6 +1,6 @@
 #include "BaseBlockType.hpp"
 
-std::pair<std::vector<engine::Vertex>, std::vector<uint>> BaseBlockType::getVerticesWIndices(uint ownID, glm::ivec3 localTransform, uint greatestIndex, uint front, uint frontRight, uint back, uint frontLeft, uint top, uint bottom)
+std::pair<std::vector<engine::Vertex>, std::vector<uint>> BaseBlockType::getVerticesWIndices(uint ownID, glm::ivec3& localTransform, uint greatestIndex, bool hide_front, bool hide_frontRight, bool hide_back, bool hide_frontLeft, bool hide_top, bool hide_bottom)
 {
 	std::vector<uint> tempIndices = m_Indices;
 

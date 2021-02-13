@@ -20,7 +20,7 @@ public:
 
 	void render(engine::Shader3D& shader);
 
-	Node& getNode(glm::ivec3 position);
+	Node getNode(glm::ivec3 position);
 	void setNode(glm::ivec3 position, uint id);
 
 private:

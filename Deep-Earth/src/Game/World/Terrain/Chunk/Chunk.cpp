@@ -3,10 +3,12 @@
 #include <algorithm>
 #include "../Node/Type/BaseBlockType.hpp"
 
+#define PROFILE
+#include "../../../../Engine/Util/Profile.hpp"
+
 Chunk::Chunk(NodeManager& nodeManager, glm::ivec3 position)
 	: m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE))
 {
-	//setNode(glm::ivec3(0), node::sand);
 	for (int x = 0; x < CHUNK_VOLUME; x++)
 		m_Nodes.at(x) = nodeManager.getNode(node::grass);
 
@@ -25,13 +27,15 @@ void Chunk::render(engine::Shader3D& shader)
 	m_VertexArray->render();
 }
 
-inline Node& Chunk::getNode(glm::ivec3 position)
+inline Node Chunk::getNode(glm::ivec3 position)
 {
 	uint flat = engine::math::DimensionalAndFlat::getFlatFrom3D(position, CHUNK_SIZE);
 
-	if (flat >= CHUNK_VOLUME || flat < 0)
+	if (position.x >= CHUNK_SIZE || position.x < 0
+	||  position.y >= CHUNK_SIZE || position.y < 0
+	||  position.z >= CHUNK_SIZE || position.z < 0)
 	{
-		std::cout << "ERROR::<Chunk::getNode> Out of bounds exception!\n";
+		return Node(node::air);
 	}
 	else
 	{
@@ -58,34 +62,40 @@ void Chunk::buildMesh(NodeManager& nodeManager)
 	std::vector<engine::Vertex> vertices;
 	std::vector<uint> indices;
 
-	uint indx = -1;
-	uint greatestIndex = -1;
-	for (auto& b : m_Nodes)
 	{
-		++indx;
-		if (b.m_ID == node::air)
-			continue;
-		
-		glm::ivec3 bPosition = engine::math::DimensionalAndFlat::get3DFromFlat(indx, CHUNK_SIZE);
+		uint indx = -1;
+		uint greatestIndex = -1;
+		for (auto& b : m_Nodes)
+		{
+			++indx;
+			if (b.m_ID == node::air)
+				continue;
 
-		// front
-		// front-right
-		// back
-		// front-left
-		// top
-		// bottom
+			glm::ivec3 bPosition = engine::math::DimensionalAndFlat::get3DFromFlat(indx, CHUNK_SIZE);
 
-		std::vector<engine::Vertex> bVertices = nodeManager.getNodeType(b.m_ID)->getVertices(bPosition, false, false);
-		std::vector<uint> bIndices = nodeManager.getNodeType(b.m_ID)->getIndices(greatestIndex, false, false);
+			//std::cout << bPosition.x << ", " << bPosition.y << ", " << bPosition.z << std::endl;
 
-		vertices.insert(vertices.end(), bVertices.begin(), bVertices.end());
-		indices.insert(indices.end(), bIndices.begin(), bIndices.end());
+			std::pair<std::vector<engine::Vertex>, std::vector<uint>> bVerticesWIndices = nodeManager.getNodeType(b.m_ID)->getVerticesWIndices(b.m_ID, bPosition, greatestIndex,
+				nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y - 1, bPosition.z)).m_ID)->doesOcclude,
+				nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x + 1, bPosition.y, bPosition.z)).m_ID)->doesOcclude,
+				nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y + 1, bPosition.z)).m_ID)->doesOcclude,
+				nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x - 1, bPosition.y, bPosition.z)).m_ID)->doesOcclude,
+				nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y, bPosition.z + 1)).m_ID)->doesOcclude,
+				nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y, bPosition.z - 1)).m_ID)->doesOcclude);
 
-		greatestIndex = *std::max_element(bIndices.begin(), bIndices.end()); // optimize this
+			if (!bVerticesWIndices.first.size() || !bVerticesWIndices.second.size())
+				continue;
+
+			vertices.insert(vertices.end(), bVerticesWIndices.first.begin(), bVerticesWIndices.first.end());
+			indices.insert(indices.end(), bVerticesWIndices.second.begin(), bVerticesWIndices.second.end());
+
+
+			greatestIndex = *std::max_element(bVerticesWIndices.second.begin(), bVerticesWIndices.second.end()); // optimize this
+		}
 	}
 
-	m_VertexArray = std::make_unique<engine::gl::VertexArray>(vertices, indices);
-}
+	PROFILE_SCOPE("DO SMTH");
 
-//std::cout << engine::math::DimensionalAndFlat::getFlatFrom3D(glm::ivec3(31, 31, 31), 32) << std::endl;
-//std::cout << engine::math::DimensionalAndFlat::get3DFromFlat(32767, 32).x << ", " << engine::math::DimensionalAndFlat::get3DFromFlat(32767, 32).y << ", " << engine::math::DimensionalAndFlat::get3DFromFlat(32767, 32).z << std::endl;
+	if(vertices.size() && indices.size())
+		m_VertexArray = std::make_unique<engine::gl::VertexArray>(vertices, indices);
+}
