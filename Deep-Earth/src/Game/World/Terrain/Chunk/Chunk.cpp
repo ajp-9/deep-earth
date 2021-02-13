@@ -75,11 +75,8 @@ void Chunk::buildMesh(NodeManager& nodeManager)
 		// top
 		// bottom
 
-		//std::cout << engine::math::DimensionalAndFlat::getFlatFrom3D(glm::ivec3(31, 31, 31), 32) << std::endl;
-		//std::cout << engine::math::DimensionalAndFlat::get3DFromFlat(32767, 32).x << ", " << engine::math::DimensionalAndFlat::get3DFromFlat(32767, 32).y << ", " << engine::math::DimensionalAndFlat::get3DFromFlat(32767, 32).z << std::endl;
-
-		std::vector<engine::Vertex> bVertices = nodeManager.getNodeType(b.m_ID)->getVertices(bPosition);
-		std::vector<uint> bIndices = nodeManager.getNodeType(b.m_ID)->getIndices(greatestIndex);
+		std::vector<engine::Vertex> bVertices = nodeManager.getNodeType(b.m_ID)->getVertices(bPosition, false, false);
+		std::vector<uint> bIndices = nodeManager.getNodeType(b.m_ID)->getIndices(greatestIndex, false, false);
 
 		vertices.insert(vertices.end(), bVertices.begin(), bVertices.end());
 		indices.insert(indices.end(), bIndices.begin(), bIndices.end());
@@ -89,3 +86,6 @@ void Chunk::buildMesh(NodeManager& nodeManager)
 
 	m_VertexArray = std::make_unique<engine::gl::VertexArray>(vertices, indices);
 }
+
+//std::cout << engine::math::DimensionalAndFlat::getFlatFrom3D(glm::ivec3(31, 31, 31), 32) << std::endl;
+//std::cout << engine::math::DimensionalAndFlat::get3DFromFlat(32767, 32).x << ", " << engine::math::DimensionalAndFlat::get3DFromFlat(32767, 32).y << ", " << engine::math::DimensionalAndFlat::get3DFromFlat(32767, 32).z << std::endl;

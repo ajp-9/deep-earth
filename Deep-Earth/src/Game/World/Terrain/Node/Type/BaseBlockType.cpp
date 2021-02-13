@@ -1,5 +1,17 @@
 #include "BaseBlockType.hpp"
 
+std::pair<std::vector<engine::Vertex>, std::vector<uint>> BaseBlockType::getVerticesWIndices(uint ownID, glm::ivec3 localTransform, uint greatestIndex, uint front, uint frontRight, uint back, uint frontLeft, uint top, uint bottom)
+{
+	std::vector<uint> tempIndices = m_Indices;
+
+	greatestIndex++;
+
+	for (auto& i : tempIndices)
+		i += greatestIndex;
+
+	return std::pair<std::vector<engine::Vertex>, std::vector<uint>>(m_Vertices, m_Indices);
+}
+
 std::vector<engine::Vertex> BaseBlockType::getVertices(glm::ivec3 localTransform, bool front, bool frontRight, bool back, bool frontLeft, bool top, bool bottom)
 {
 	return m_Vertices;

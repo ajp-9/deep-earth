@@ -52,6 +52,8 @@ std::vector<uint> BlockType::getIndices(uint greatestIndex, bool front, bool fro
 {
     std::vector<uint> tempIndices;
 
+    uint faces = 0;
+
     if (front && frontRight && back && frontLeft && top && bottom)
     {
         tempIndices = m_Indices;
@@ -59,29 +61,38 @@ std::vector<uint> BlockType::getIndices(uint greatestIndex, bool front, bool fro
     else
     {
         if (front)
-            tempIndices.insert(tempIndices.end(), m_IndicesFace.begin(), m_IndicesFace.end());
+            faces++;
 
         if (frontRight)
-            tempIndices.insert(tempIndices.end(), m_IndicesFace.begin(), m_IndicesFace.end());
+            faces++;
 
         if (back)
-            tempIndices.insert(tempIndices.end(), m_IndicesFace.begin(), m_IndicesFace.end());
+            faces++;
 
         if (frontLeft)
-            tempIndices.insert(tempIndices.end(), m_IndicesFace.begin(), m_IndicesFace.end());
+            faces++;
 
         if (top)
-            tempIndices.insert(tempIndices.end(), m_IndicesFace.begin(), m_IndicesFace.end());
+            faces++;
 
         if (top)
-            tempIndices.insert(tempIndices.end(), m_IndicesFace.begin(), m_IndicesFace.end());
+            faces++;
+
     }
+
+    // you have to fix this
 
     greatestIndex++;
 
-    for (auto& i : tempIndices)
+    for (int i = 0; i < faces; i++)
     {
-        i += greatestIndex;
+        std::vector<uint> quickTempIndicesFace = m_IndicesFace;
+        for (auto& q : quickTempIndicesFace)
+        {
+            q += (i * 4) + greatestIndex;
+        }
+        tempIndices.insert(tempIndices.end(), quickTempIndicesFace.begin(), quickTempIndicesFace.end());
+
     }
 
     return tempIndices;
