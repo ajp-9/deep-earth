@@ -9,7 +9,7 @@ ChunkManager::ChunkManager(NodeManager& nodeManager)
 {
 	for (int x = 0; x < 5; x++)
 		for (int y = 0; y < 5; y++)
-			for (int z = 0; z < 2; z++)
+			for (int z = 0; z < 5; z++)
 			{
 				chunks.emplace_back(std::make_unique<Chunk>(nodeManager, glm::ivec3(x, y, z)));
 			}

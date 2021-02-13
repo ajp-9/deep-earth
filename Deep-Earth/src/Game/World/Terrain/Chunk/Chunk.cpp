@@ -64,29 +64,32 @@ void Chunk::buildMesh(NodeManager& nodeManager)
 
 	uint indx = -1;
 	uint greatestIndex = -1;
-	for (auto& b : m_Nodes)
 	{
-		++indx;
-		if (b.m_ID == node::air)
-			continue;
+		for (auto& b : m_Nodes)
+		{
+			++indx;
+			if (b.m_ID == node::air)
+				continue;
 
-		glm::ivec3 bPosition = engine::math::DimensionalAndFlat::get3DFromFlat(indx, CHUNK_SIZE);
+			glm::ivec3 bPosition = engine::math::DimensionalAndFlat::get3DFromFlat(indx, CHUNK_SIZE);
 
-		std::pair<std::vector<engine::Vertex>, std::vector<uint>> bVerticesWIndices = nodeManager.getNodeType(b.m_ID)->getVerticesWIndices(b.m_ID, bPosition, greatestIndex,
-			nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y - 1, bPosition.z)).m_ID)->doesOcclude,
-			nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x + 1, bPosition.y, bPosition.z)).m_ID)->doesOcclude,
-			nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y + 1, bPosition.z)).m_ID)->doesOcclude,
-			nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x - 1, bPosition.y, bPosition.z)).m_ID)->doesOcclude,
-			nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y, bPosition.z + 1)).m_ID)->doesOcclude,
-			nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y, bPosition.z - 1)).m_ID)->doesOcclude);
+			std::pair<std::vector<engine::Vertex>, std::vector<uint>> bVerticesWIndices = nodeManager.getNodeType(b.m_ID)->getVerticesWIndices(b.m_ID, bPosition, greatestIndex,
+				nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y - 1, bPosition.z)).m_ID)->doesOcclude,
+				nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x + 1, bPosition.y, bPosition.z)).m_ID)->doesOcclude,
+				nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y + 1, bPosition.z)).m_ID)->doesOcclude,
+				nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x - 1, bPosition.y, bPosition.z)).m_ID)->doesOcclude,
+				nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y, bPosition.z + 1)).m_ID)->doesOcclude,
+				nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y, bPosition.z - 1)).m_ID)->doesOcclude);
 
-		if (!bVerticesWIndices.first.size() || !bVerticesWIndices.second.size())
-			continue;
 
-		vertices.insert(vertices.end(), bVerticesWIndices.first.begin(), bVerticesWIndices.first.end());
-		indices.insert(indices.end(), bVerticesWIndices.second.begin(), bVerticesWIndices.second.end());
+			if (!bVerticesWIndices.first.size() || !bVerticesWIndices.second.size())
+				continue;
 
-		greatestIndex = *std::max_element(bVerticesWIndices.second.begin(), bVerticesWIndices.second.end()); // optimize this
+			vertices.insert(vertices.end(), bVerticesWIndices.first.begin(), bVerticesWIndices.first.end());
+			indices.insert(indices.end(), bVerticesWIndices.second.begin(), bVerticesWIndices.second.end());
+
+			greatestIndex = *std::max_element(bVerticesWIndices.second.begin(), bVerticesWIndices.second.end()); // optimize this
+		}
 	}
 
 	if(vertices.size() && indices.size())

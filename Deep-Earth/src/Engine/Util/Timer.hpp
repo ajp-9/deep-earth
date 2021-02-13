@@ -8,7 +8,7 @@ namespace engine
 	{
 	public:
 
-		Timer(const char* name = "Anonymous", bool print_us = false);
+		Timer(const char* name = "Anonymous");
 
 		~Timer();
 
@@ -18,7 +18,6 @@ namespace engine
 
 		const char* m_Name;
 		std::chrono::time_point<std::chrono::high_resolution_clock> m_startTimepoint;
-		bool m_Print_US;
 		bool m_Stopped;
 	};
 }

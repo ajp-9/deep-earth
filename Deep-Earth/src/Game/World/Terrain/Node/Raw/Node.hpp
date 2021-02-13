@@ -22,9 +22,9 @@ data format
 2 -
 3 -
 4 -
-5 - light emitter
-6 - light emitter
-7 - light emitter
-8 - light emitter
+5 -
+6 -
+7 -
+8 -
 
 */
