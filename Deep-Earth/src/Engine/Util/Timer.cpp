@@ -15,6 +15,7 @@ namespace engine
 		if (!m_Stopped)
 			stop();
 	}
+
 	void Timer::stop()
 	{
 		auto endTimepoint = std::chrono::high_resolution_clock::now();

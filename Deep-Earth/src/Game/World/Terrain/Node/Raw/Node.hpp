@@ -8,11 +8,11 @@ struct Node
 	Node();
 	Node(byte id);
 
-	byte m_ID; 
+	byte m_ID = 0;
 
 private:
 
-	byte m_Data;
+	byte m_Data = 0;
 };
 
 /*
@@ -22,9 +22,9 @@ data format
 2 -
 3 -
 4 -
-5 -
-6 -
-7 -
-8 -
+5 - light emitter
+6 - light emitter
+7 - light emitter
+8 - light emitter
 
 */

@@ -12,21 +12,6 @@ std::pair<std::vector<engine::Vertex>, std::vector<uint>> BaseBlockType::getVert
 	return std::pair<std::vector<engine::Vertex>, std::vector<uint>>(m_Vertices, m_Indices);
 }
 
-std::vector<engine::Vertex> BaseBlockType::getVertices(glm::ivec3 localTransform, bool front, bool frontRight, bool back, bool frontLeft, bool top, bool bottom)
-{
-	return m_Vertices;
-}
-
-std::vector<uint> BaseBlockType::getIndices(uint greatestIndex, bool front, bool frontRight, bool back, bool frontLeft, bool top, bool bottom)
-{
-	std::vector<uint> tempIndices = m_Indices;
-
-	for (auto& i : tempIndices)
-		i += greatestIndex;
-
-	return tempIndices;
-}
-
 void BaseBlockType::createMesh()
 {
 	std::vector<engine::Vertex> vertices;
