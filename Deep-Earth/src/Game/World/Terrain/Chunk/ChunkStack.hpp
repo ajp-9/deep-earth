@@ -8,5 +8,5 @@ public:
 
 private:
 
-	std::vector<std::unique_ptr<Chunk>> m_Chunks;
+	std::vector<std::shared_ptr<Chunk>> m_Chunks;
 };

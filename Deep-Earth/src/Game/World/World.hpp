@@ -3,7 +3,7 @@
 #include "../../Engine/Renderer/Renderer.hpp"
 #include "Terrain/Node/NodeManager.hpp"
 #include "Terrain/Terrain.hpp"
-#include "../Entity/Player.hpp"
+#include "Entity/Player.hpp"
 
 class World
 {

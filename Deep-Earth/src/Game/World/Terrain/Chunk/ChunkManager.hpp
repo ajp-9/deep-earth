@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Chunk.hpp"
+#include "ChunkDatabase.hpp"
 
 class ChunkManager
 {
@@ -14,6 +15,5 @@ public:
 
 private:
 
-	// Is a unique ptr for space
-	std::vector<std::unique_ptr<Chunk>> chunks;
+	ChunkDatabase m_ChunkDatabase;
 };

@@ -6,17 +6,17 @@
 #define PROFILE
 #include "../../../../Engine/Util/Profile.hpp"
 
-Chunk::Chunk(NodeManager& nodeManager, glm::ivec3 position)
-	: m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE))
+Chunk::Chunk(NodeManager& nodeManager, glm::ivec3 position, std::vector<std::shared_ptr<Chunk>>& allChunksRef)
+	: m_Position(position), m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE)), m_AllChunksRef(allChunksRef)
 {
 	for (int x = 0; x < CHUNK_VOLUME; x++)
-		m_Nodes.at(x) = nodeManager.getNode(node::grass);
+		m_Nodes.at(x) = nodeManager.getNode(node::dirt);
 
 	buildMesh(nodeManager);
 }
 
-Chunk::Chunk(NodeManager& nodeManager, std::vector<Node>& m_Nodes, glm::ivec3& position)
-	: m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE))
+Chunk::Chunk(NodeManager& nodeManager, std::vector<Node>& m_Nodes, glm::ivec3& position, std::vector<std::shared_ptr<Chunk>>& allChunksRef)
+	: m_Position(position), m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE)), m_AllChunksRef(allChunksRef)
 {
 
 }
@@ -25,6 +25,10 @@ void Chunk::render(engine::Shader3D& shader)
 {
 	shader.setModelMatrix(m_TransformationMatrix);
 	m_VertexArray->render();
+}
+
+void Chunk::tick()
+{
 }
 
 inline Node Chunk::getNode(glm::ivec3 position)
