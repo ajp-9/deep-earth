@@ -11,23 +11,28 @@
 #define CHUNK_SIZE 32
 #define CHUNK_VOLUME 32768 // 32*32*32
 
+struct ChunkDatabase;
+
 class Chunk
 {
 public:
 
-	Chunk(NodeManager& nodeManager, glm::ivec3 position, std::vector<std::shared_ptr<Chunk>>& allChunksRef);
-	Chunk(NodeManager& nodeManager, std::vector<Node>& m_Blocks, glm::ivec3& position, std::vector<std::shared_ptr<Chunk>>& allChunksRef);
+	Chunk(NodeManager& nodeManager, glm::ivec3 position, ChunkDatabase& chunkDatabase);
+	Chunk(NodeManager& nodeManager, std::vector<Node>& m_Blocks, glm::ivec3& position, ChunkDatabase& chunkDatabase);
 
 	void render(engine::Shader3D& shader);
 	void tick();
 
 	Node getNode(glm::ivec3 position);
 	void setNode(glm::ivec3 position, uint id);
-
+	
 	inline const glm::ivec3& getPosition() { return m_Position; }
+
+	void getNeighboringChunks();
 
 private:
 
+	// Run after ALL chunks have been loaded.
 	void buildMesh(NodeManager& nodeManager);
 
 	glm::ivec3 m_Position;
@@ -36,15 +41,14 @@ private:
 
 	glm::mat4 m_TransformationMatrix;
 
-	std::vector<std::shared_ptr<Chunk>>& m_AllChunksRef;
+	ChunkDatabase& m_ChunkDatabase;
 
-	std::weak_ptr<Chunk> m_ChunkRef_front;
-	std::weak_ptr<Chunk> m_ChunkRef_frontRight;
-	std::weak_ptr<Chunk> m_ChunkRef_back;
-	std::weak_ptr<Chunk> m_ChunkRef_frontLeft;
-	std::weak_ptr<Chunk> m_ChunkRef_top;
-	std::weak_ptr<Chunk> m_ChunkRef_bottom;
-
+	std::weak_ptr<Chunk> m_ChunkRef_front;			bool m_IsChunkActive_front = false;
+	std::weak_ptr<Chunk> m_ChunkRef_frontRight;		bool m_IsChunkActive_frontRight = false;
+	std::weak_ptr<Chunk> m_ChunkRef_back;			bool m_IsChunkActive_back = false;
+	std::weak_ptr<Chunk> m_ChunkRef_frontLeft;		bool m_IsChunkActive_frontLeft = false;
+	std::weak_ptr<Chunk> m_ChunkRef_top;			bool m_IsChunkActive_top = false;
+	std::weak_ptr<Chunk> m_ChunkRef_bottom;			bool m_IsChunkActive_bottom = false;
 
 	std::vector<Node> m_Nodes = std::vector<Node>(CHUNK_VOLUME);
 	std::vector<Light> m_LightMap = std::vector<Light>(CHUNK_VOLUME);

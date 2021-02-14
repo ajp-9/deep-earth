@@ -6,17 +6,19 @@
 #define PROFILE
 #include "../../../../Engine/Util/Profile.hpp"
 
-Chunk::Chunk(NodeManager& nodeManager, glm::ivec3 position, std::vector<std::shared_ptr<Chunk>>& allChunksRef)
-	: m_Position(position), m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE)), m_AllChunksRef(allChunksRef)
+#include "ChunkDatabase.hpp"
+
+Chunk::Chunk(NodeManager& nodeManager, glm::ivec3 position, ChunkDatabase& chunkDatabase)
+	: m_Position(position), m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE)), m_ChunkDatabase(chunkDatabase)
 {
 	for (int x = 0; x < CHUNK_VOLUME; x++)
-		m_Nodes.at(x) = nodeManager.getNode(node::dirt);
+		m_Nodes.at(x) = nodeManager.getNode(node::grass);
 
 	buildMesh(nodeManager);
 }
 
-Chunk::Chunk(NodeManager& nodeManager, std::vector<Node>& m_Nodes, glm::ivec3& position, std::vector<std::shared_ptr<Chunk>>& allChunksRef)
-	: m_Position(position), m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE)), m_AllChunksRef(allChunksRef)
+Chunk::Chunk(NodeManager& nodeManager, std::vector<Node>& m_Nodes, glm::ivec3& position, ChunkDatabase& chunkDatabase)
+	: m_Position(position), m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE)), m_ChunkDatabase(chunkDatabase)
 {
 
 }
@@ -53,12 +55,40 @@ inline void Chunk::setNode(glm::ivec3 position, uint id)
 
 	if (flat >= CHUNK_VOLUME || flat < 0)
 	{
-		std::cout << "ERROR::<Chunk::setNode> Out of bounds exception!\n";
+		std::cout << "ERROR::<Chunk::setNode>: Out of bounds exception!\n";
 	}
 	else
 	{
 		m_Nodes.at(flat) = Node(id);
 	}
+}
+
+void Chunk::getNeighboringChunks()
+{
+	if (m_ChunkRef_front.expired())
+		m_ChunkDatabase.getChunkWCallback(glm::ivec3(m_Position.x, m_Position.y - 1, m_Position.z), m_ChunkRef_front);
+
+	if (m_ChunkRef_frontRight.expired())
+		m_ChunkDatabase.getChunkWCallback(glm::ivec3(m_Position.x + 1, m_Position.y, m_Position.z), m_ChunkRef_frontRight);
+
+	if (m_ChunkRef_back.expired())
+		m_ChunkDatabase.getChunkWCallback(glm::ivec3(m_Position.x, m_Position.y + 1, m_Position.z), m_ChunkRef_back);
+
+	if (m_ChunkRef_frontLeft.expired())
+		m_ChunkDatabase.getChunkWCallback(glm::ivec3(m_Position.x - 1, m_Position.y, m_Position.z), m_ChunkRef_frontLeft);
+
+	if (m_ChunkRef_top.expired())
+		m_ChunkDatabase.getChunkWCallback(glm::ivec3(m_Position.x, m_Position.y, m_Position.z + 1), m_ChunkRef_top);
+
+	if (m_ChunkRef_bottom.expired())
+		m_ChunkDatabase.getChunkWCallback(glm::ivec3(m_Position.x, m_Position.y, m_Position.z - 1), m_ChunkRef_bottom);
+
+	/*std::cout << m_IsChunkActive_front << "\n";
+	std::cout << m_IsChunkActive_frontRight << "\n";
+	std::cout << m_IsChunkActive_back << "\n";
+	std::cout << m_IsChunkActive_frontLeft << "\n";
+	std::cout << m_IsChunkActive_top << "\n";
+	std::cout << m_IsChunkActive_bottom << "\n";*/
 }
 
 void Chunk::buildMesh(NodeManager& nodeManager)
@@ -99,3 +129,5 @@ void Chunk::buildMesh(NodeManager& nodeManager)
 	if(vertices.size() && indices.size())
 		m_VertexArray = std::make_unique<engine::gl::VertexArray>(vertices, indices);
 }
+
+//std::cout << m_Position.x << ", " << m_Position.y << ", " << m_Position.z << "\n";

@@ -7,15 +7,21 @@
 
 ChunkManager::ChunkManager(NodeManager& nodeManager)
 {
-	for (int x = 0; x < 24; x++)
-		for (int y = 0; y < 24; y++)
-			for (int z = 0; z < 1; z++)
+	for (int x = 0; x < 4; x++)
+		for (int y = 0; y < 4; y++)
+			for (int z = 0; z < 2; z++)
 			{
-				std::shared_ptr<Chunk> chunk = std::make_shared<Chunk>(nodeManager, glm::ivec3(x, y, z), m_ChunkDatabase.m_Chunks);
+				std::shared_ptr<Chunk> chunk = std::make_shared<Chunk>(nodeManager, glm::ivec3(x, y, z), m_ChunkDatabase);
 				m_ChunkDatabase.addChunk(chunk);
 			}
 
-	auto ps = glm::ivec3(23, 23, 1);
+	for (auto& c : m_ChunkDatabase.m_Chunks)
+	{
+		PROFILE_SCOPE("w", w);
+		c->getNeighboringChunks();
+	}
+
+	auto ps = glm::ivec3(0, 0, 0);
 	m_ChunkDatabase.eraseChunk(ps);
 }
 

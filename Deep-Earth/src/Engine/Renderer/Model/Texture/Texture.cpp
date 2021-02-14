@@ -50,10 +50,12 @@ namespace engine
             {
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
             }
-            //glGenerateMipmap(GL_TEXTURE_2D);
+            glGenerateMipmap(GL_TEXTURE_2D);
 
-            //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
-            //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -4);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_LOD, -1);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LOD, 2);
         }
         else
         {
