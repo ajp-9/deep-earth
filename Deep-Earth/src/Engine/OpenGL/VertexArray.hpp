@@ -18,6 +18,8 @@ namespace engine::gl
 		void render();
 		void unbind();
 
+		inline bool isAlive() { return m_VAO; }
+
 		/*
 		VertexArray(const VertexArray& other) = default;
 		VertexArray(VertexArray&& other) noexcept

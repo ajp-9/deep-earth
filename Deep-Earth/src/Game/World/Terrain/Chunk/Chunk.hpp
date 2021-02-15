@@ -23,17 +23,18 @@ public:
 	void render(engine::Shader3D& shader);
 	void tick();
 
-	Node getNode(glm::ivec3 position);
+	Node& getNode(glm::ivec3 position);
 	void setNode(glm::ivec3 position, uint id);
 	
 	inline const glm::ivec3& getPosition() { return m_Position; }
 
 	void getNeighboringChunks();
 
-private:
 
 	// Run after ALL chunks have been loaded.
 	void buildMesh(NodeManager& nodeManager);
+
+private:
 
 	glm::ivec3 m_Position;
 

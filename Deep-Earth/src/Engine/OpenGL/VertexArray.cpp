@@ -6,7 +6,7 @@
 namespace engine::gl
 {
     VertexArray::VertexArray()
-        : m_VAO(0), m_VBO(0), m_IndicesSize(0)
+        : m_VAO(0), m_VBO(0), m_EBO(0), m_IndicesSize(0)
     {}
 
     VertexArray::VertexArray(std::vector<Vertex>& vertices, std::vector<uint>& indices)

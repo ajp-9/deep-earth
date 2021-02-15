@@ -14,7 +14,7 @@ Chunk::Chunk(NodeManager& nodeManager, glm::ivec3 position, ChunkDatabase& chunk
 	for (int x = 0; x < CHUNK_VOLUME; x++)
 		m_Nodes.at(x) = nodeManager.getNode(node::grass);
 
-	buildMesh(nodeManager);
+	//buildMesh(nodeManager);
 }
 
 Chunk::Chunk(NodeManager& nodeManager, std::vector<Node>& m_Nodes, glm::ivec3& position, ChunkDatabase& chunkDatabase)
@@ -25,26 +25,29 @@ Chunk::Chunk(NodeManager& nodeManager, std::vector<Node>& m_Nodes, glm::ivec3& p
 
 void Chunk::render(engine::Shader3D& shader)
 {
-	shader.setModelMatrix(m_TransformationMatrix);
-	m_VertexArray->render();
+	if (m_VertexArray != nullptr)
+	{
+		shader.setModelMatrix(m_TransformationMatrix);
+		m_VertexArray->render();
+	}
 }
 
 void Chunk::tick()
 {
 }
 
-inline Node Chunk::getNode(glm::ivec3 position)
+inline Node& Chunk::getNode(glm::ivec3 position)
 {
-	uint flat = engine::math::DimensionalAndFlat::getFlatFrom3D(position, CHUNK_SIZE);
-
 	if (position.x >= CHUNK_SIZE || position.x < 0
 	||  position.y >= CHUNK_SIZE || position.y < 0
 	||  position.z >= CHUNK_SIZE || position.z < 0)
 	{
-		return Node(node::air);
+		Node node = Node(node::air);
+		return node;
 	}
 	else
 	{
+		uint flat = engine::math::DimensionalAndFlat::getFlatFrom3D(position, CHUNK_SIZE);
 		return m_Nodes.at(flat);
 	}
 }
@@ -82,17 +85,12 @@ void Chunk::getNeighboringChunks()
 
 	if (m_ChunkRef_bottom.expired())
 		m_ChunkDatabase.getChunkWCallback(glm::ivec3(m_Position.x, m_Position.y, m_Position.z - 1), m_ChunkRef_bottom);
-
-	/*std::cout << m_IsChunkActive_front << "\n";
-	std::cout << m_IsChunkActive_frontRight << "\n";
-	std::cout << m_IsChunkActive_back << "\n";
-	std::cout << m_IsChunkActive_frontLeft << "\n";
-	std::cout << m_IsChunkActive_top << "\n";
-	std::cout << m_IsChunkActive_bottom << "\n";*/
 }
 
 void Chunk::buildMesh(NodeManager& nodeManager)
 {
+	getNeighboringChunks();
+
 	std::vector<engine::Vertex> vertices;
 	std::vector<uint> indices;
 
@@ -107,14 +105,91 @@ void Chunk::buildMesh(NodeManager& nodeManager)
 
 			glm::ivec3 bPosition = engine::math::DimensionalAndFlat::get3DFromFlat(indx, CHUNK_SIZE);
 
-			std::pair<std::vector<engine::Vertex>, std::vector<uint>> bVerticesWIndices = nodeManager.getNodeType(b.m_ID)->getVerticesWIndices(b.m_ID, bPosition, greatestIndex,
-				nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y - 1, bPosition.z)).m_ID)->doesOcclude,
-				nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x + 1, bPosition.y, bPosition.z)).m_ID)->doesOcclude,
-				nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y + 1, bPosition.z)).m_ID)->doesOcclude,
-				nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x - 1, bPosition.y, bPosition.z)).m_ID)->doesOcclude,
-				nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y, bPosition.z + 1)).m_ID)->doesOcclude,
-				nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y, bPosition.z - 1)).m_ID)->doesOcclude);
+			// Does node occlude the side.
+			bool doesFrontOcclude, doesFrontRightOcclude, doesBackOcclude, doesFrontLeftOcclude, doesTopOcclude, doesBottomOcclude;
 
+			// front
+			if (bPosition.y)
+			{
+				doesFrontOcclude = nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, CHUNK_SIZE - 1, bPosition.z)).m_ID)->doesOcclude;
+			}
+			else
+			{
+				if (!m_ChunkRef_front.expired())
+					doesFrontOcclude = nodeManager.getNodeType(m_ChunkRef_front.lock()->getNode(glm::ivec3(bPosition.x, CHUNK_SIZE - 1, bPosition.z)).m_ID)->doesOcclude;
+				else
+					doesFrontOcclude = false;
+			}
+
+			// front right
+			if (bPosition.x != CHUNK_SIZE - 1)
+			{
+				doesFrontRightOcclude = nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x + 1, bPosition.y, bPosition.z)).m_ID)->doesOcclude;
+			}
+			else
+			{
+				if (!m_ChunkRef_frontRight.expired())
+					doesFrontRightOcclude = nodeManager.getNodeType(m_ChunkRef_frontRight.lock()->getNode(glm::ivec3(0, bPosition.y, bPosition.z)).m_ID)->doesOcclude;
+				else
+					doesFrontRightOcclude = false;
+			}
+
+			// back
+			if (bPosition.y != CHUNK_SIZE - 1)
+			{
+				doesBackOcclude = nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, 0, bPosition.z)).m_ID)->doesOcclude;
+			}
+			else
+			{
+				if (!m_ChunkRef_back.expired())
+					doesBackOcclude = nodeManager.getNodeType(m_ChunkRef_back.lock()->getNode(glm::ivec3(bPosition.x, 0, bPosition.z)).m_ID)->doesOcclude;
+				else
+					doesBackOcclude = false;
+			}
+
+			// front left
+			if (bPosition.x)
+			{
+				doesFrontLeftOcclude = nodeManager.getNodeType(getNode(glm::ivec3(CHUNK_SIZE - 1, bPosition.y, bPosition.z)).m_ID)->doesOcclude;
+			}
+			else
+			{
+				if (!m_ChunkRef_frontLeft.expired())
+					doesFrontLeftOcclude = nodeManager.getNodeType(m_ChunkRef_frontLeft.lock()->getNode(glm::ivec3(CHUNK_SIZE - 1, bPosition.y, bPosition.z)).m_ID)->doesOcclude;
+				else
+					doesFrontLeftOcclude = false;
+			}
+
+			// top
+			if (bPosition.z != CHUNK_SIZE - 1)
+			{
+				doesTopOcclude = nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y, 0)).m_ID)->doesOcclude;
+			}
+			else
+			{
+				if (!m_ChunkRef_top.expired())
+					doesTopOcclude = nodeManager.getNodeType(m_ChunkRef_top.lock()->getNode(glm::ivec3(bPosition.x, bPosition.y, 0)).m_ID)->doesOcclude;
+				else
+					doesTopOcclude = false;
+			}
+
+			// bottom
+			if (bPosition.z)
+			{
+				doesBottomOcclude = nodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y, CHUNK_SIZE - 1)).m_ID)->doesOcclude;
+			}
+			else
+			{
+				if (!m_ChunkRef_bottom.expired())
+					doesBottomOcclude = nodeManager.getNodeType(m_ChunkRef_bottom.lock()->getNode(glm::ivec3(bPosition.x, bPosition.y, CHUNK_SIZE - 1)).m_ID)->doesOcclude;
+				else
+					doesBottomOcclude = false;
+			}
+
+			std::pair<std::vector<engine::Vertex>, std::vector<uint>> bVerticesWIndices = nodeManager.getNodeType(b.m_ID)->getVerticesWIndices(b.m_ID, bPosition, greatestIndex,
+				doesFrontOcclude, doesFrontRightOcclude,
+				doesBackOcclude, doesFrontLeftOcclude,
+				doesTopOcclude, doesBottomOcclude);
 
 			if (!bVerticesWIndices.first.size() || !bVerticesWIndices.second.size())
 				continue;
