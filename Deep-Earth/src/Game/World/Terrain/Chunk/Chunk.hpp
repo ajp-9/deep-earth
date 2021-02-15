@@ -20,6 +20,7 @@ public:
 
 	Chunk(NodeManager& nodeManager, glm::ivec3 position, ChunkDatabaseNEW& chunkDatabase);
 	Chunk(NodeManager& nodeManager, std::vector<Node>& m_Blocks, glm::ivec3& position, ChunkDatabaseNEW& chunkDatabase);
+	~Chunk();
 
 	void render(engine::Shader3D& shader);
 	void tick();
@@ -43,8 +44,8 @@ private:
 
 	glm::mat4 m_TransformationMatrix;
 
-	//ChunkDatabase& m_ChunkDatabase;
 	ChunkDatabaseNEW& NEW;
+	NodeManager& m_NodeManager;
 
 	std::weak_ptr<Chunk> m_ChunkRef_front;			bool m_IsChunkActive_front = false;
 	std::weak_ptr<Chunk> m_ChunkRef_frontRight;		bool m_IsChunkActive_frontRight = false;

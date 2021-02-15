@@ -24,13 +24,10 @@ void ChunkManager::loadChunks(NodeManager& nodeManager, glm::ivec3 playerPos)
 				}
 			}
 
-	std::cout << "-------------------\n";
-
 	//std::shared_ptr<Chunk> chunk = std::make_shared<Chunk>(nodeManager, glm::ivec3(0, 0, 0), NEW);
 	//NEW.addChunk(chunk);
 
-	//for (auto& c : NEW.m_Chunks)
-	//	c->buildMesh(nodeManager);
+	NEW.removeChunk(glm::ivec3(0));
 }
 
 void ChunkManager::render(engine::Shader3D& shader)

@@ -1,7 +1,7 @@
 #include "World.hpp"
 
 World::World()
-	: m_Player(glm::vec3(0, -3, 0))
+	: m_Player(glm::vec3(0, 0, 0))
 {}
 
 World::~World()

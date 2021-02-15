@@ -9,7 +9,7 @@
 #include "ChunkDatabaseNEW.hpp"
 
 Chunk::Chunk(NodeManager& nodeManager, glm::ivec3 position, ChunkDatabaseNEW& chunkDatabase)
-	: m_Position(position), m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE)), NEW(chunkDatabase)
+	: m_Position(position), m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE)), NEW(chunkDatabase), m_NodeManager(nodeManager)
 {
 	for (int x = 0; x < CHUNK_VOLUME; x++)
 		m_Nodes.at(x) = nodeManager.getNode(node::grass);
@@ -18,9 +18,23 @@ Chunk::Chunk(NodeManager& nodeManager, glm::ivec3 position, ChunkDatabaseNEW& ch
 }
 
 Chunk::Chunk(NodeManager& nodeManager, std::vector<Node>& m_Nodes, glm::ivec3& position, ChunkDatabaseNEW& chunkDatabase)
-	: m_Position(position), m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE)), NEW(chunkDatabase)
+	: m_Position(position), m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE)), NEW(chunkDatabase), m_NodeManager(nodeManager)
+{}
+
+Chunk::~Chunk()
 {
-	
+	if (!m_ChunkRef_front.expired())
+		m_ChunkRef_front.lock()->buildMesh(m_NodeManager, false);
+	if (!m_ChunkRef_frontRight.expired())
+		m_ChunkRef_frontRight.lock()->buildMesh(m_NodeManager, false);
+	if (!m_ChunkRef_back.expired())
+		m_ChunkRef_back.lock()->buildMesh(m_NodeManager, false);
+	if (!m_ChunkRef_frontLeft.expired())
+		m_ChunkRef_frontLeft.lock()->buildMesh(m_NodeManager, false);
+	if (!m_ChunkRef_top.expired())
+		m_ChunkRef_top.lock()->buildMesh(m_NodeManager, false);
+	if (!m_ChunkRef_bottom.expired())
+		m_ChunkRef_bottom.lock()->buildMesh(m_NodeManager, false);
 }
 
 void Chunk::render(engine::Shader3D& shader)
