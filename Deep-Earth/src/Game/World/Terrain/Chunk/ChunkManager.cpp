@@ -1,33 +1,41 @@
-#include "ChunkManager.hpp"
+ #include "ChunkManager.hpp"
 
 #include "../Node/NodeManager.hpp"
 #include <algorithm>
 #define PROFILE
 #include "../../../../Engine/Util/Profile.hpp"
 
-ChunkManager::ChunkManager(NodeManager& nodeManager)
+#define VIEW_DISTANCE 5
+
+ChunkManager::ChunkManager()
+{}
+
+void ChunkManager::loadChunks(NodeManager& nodeManager, glm::ivec3 playerPos)
 {
-	for (int x = 0; x < 3; x++)
-		for (int y = 0; y < 3; y++)
+	for (int x = (playerPos.x / 32) - VIEW_DISTANCE; x < (playerPos.x / 32) + VIEW_DISTANCE; x++)
+		for (int y = (playerPos.y / 32) - VIEW_DISTANCE; y < (playerPos.y / 32) + VIEW_DISTANCE; y++)
 			for (int z = 0; z < 1; z++)
 			{
-				std::shared_ptr<Chunk> chunk = std::make_shared<Chunk>(nodeManager, glm::ivec3(x, y, z), m_ChunkDatabase);
-				m_ChunkDatabase.addChunk(chunk);
+				if (!NEW.hasChunk(glm::ivec3(x, y, z)))
+				{
+					std::shared_ptr<Chunk> chunk = std::make_shared<Chunk>(nodeManager, glm::ivec3(x, y, z), NEW);
+					NEW.addChunk(chunk);
+					chunk->buildMesh(nodeManager);
+				}
 			}
 
-	for (auto& c : m_ChunkDatabase.m_Chunks)
-		c->getNeighboringChunks();
+	std::cout << "-------------------\n";
 
-	for (auto& c : m_ChunkDatabase.m_Chunks)
-		c->buildMesh(nodeManager);
+	//std::shared_ptr<Chunk> chunk = std::make_shared<Chunk>(nodeManager, glm::ivec3(0, 0, 0), NEW);
+	//NEW.addChunk(chunk);
 
-	//auto ps = glm::ivec3(0, 0, 0);
-	//m_ChunkDatabase.eraseChunk(ps);
+	//for (auto& c : NEW.m_Chunks)
+	//	c->buildMesh(nodeManager);
 }
 
 void ChunkManager::render(engine::Shader3D& shader)
 {
-	for (auto& chunk : m_ChunkDatabase.m_Chunks)
+	for (auto& chunk : NEW.m_Chunks)
 		chunk->render(shader);
 }
 

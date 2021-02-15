@@ -2,12 +2,15 @@
 
 #include "Chunk.hpp"
 #include "ChunkDatabase.hpp"
+#include "ChunkDatabaseNEW.hpp"
 
 class ChunkManager
 {
 public:
 
-	ChunkManager(NodeManager& nodeManager);
+	ChunkManager();
+
+	void loadChunks(NodeManager& nodeManager, glm::ivec3 playerPos);
 
 	void render(engine::Shader3D& shader);
 	void update();
@@ -16,4 +19,5 @@ public:
 private:
 
 	ChunkDatabase m_ChunkDatabase;
+	ChunkDatabaseNEW NEW;
 };

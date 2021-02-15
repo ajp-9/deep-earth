@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../../Engine/Entity/Camera3D.hpp"
-#include "../../../Engine/Application/Application.hpp"
+#include "../../../../Engine/Entity/Camera3D.hpp"
+#include "../../../../Engine/Application/Application.hpp"
 
 class Player : public engine::Camera3D
 {
@@ -10,6 +10,8 @@ public:
 	Player(glm::vec3 position);
 
 	void update(engine::Application& application);
+
+    inline glm::vec3& getPosition() { return m_Position; }
 
 private:
 

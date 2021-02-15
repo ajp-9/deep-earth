@@ -12,13 +12,14 @@
 #define CHUNK_VOLUME 32768 // 32*32*32
 
 struct ChunkDatabase;
+struct ChunkDatabaseNEW;
 
 class Chunk
 {
 public:
 
-	Chunk(NodeManager& nodeManager, glm::ivec3 position, ChunkDatabase& chunkDatabase);
-	Chunk(NodeManager& nodeManager, std::vector<Node>& m_Blocks, glm::ivec3& position, ChunkDatabase& chunkDatabase);
+	Chunk(NodeManager& nodeManager, glm::ivec3 position, ChunkDatabaseNEW& chunkDatabase);
+	Chunk(NodeManager& nodeManager, std::vector<Node>& m_Blocks, glm::ivec3& position, ChunkDatabaseNEW& chunkDatabase);
 
 	void render(engine::Shader3D& shader);
 	void tick();
@@ -32,7 +33,7 @@ public:
 
 
 	// Run after ALL chunks have been loaded.
-	void buildMesh(NodeManager& nodeManager);
+	void buildMesh(NodeManager& nodeManager, bool buildNeighbors = true);
 
 private:
 
@@ -42,7 +43,8 @@ private:
 
 	glm::mat4 m_TransformationMatrix;
 
-	ChunkDatabase& m_ChunkDatabase;
+	//ChunkDatabase& m_ChunkDatabase;
+	ChunkDatabaseNEW& NEW;
 
 	std::weak_ptr<Chunk> m_ChunkRef_front;			bool m_IsChunkActive_front = false;
 	std::weak_ptr<Chunk> m_ChunkRef_frontRight;		bool m_IsChunkActive_frontRight = false;

@@ -10,7 +10,7 @@ public:
 
 	Terrain();
 
-	void render(engine::Shader3D& shader);
+	void render(engine::Shader3D& shader, glm::vec3& playerPos);
 	void update();
 
 private:
