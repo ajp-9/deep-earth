@@ -15,12 +15,11 @@ namespace engine
 
     Texture::Texture(const char* path, bool nearest)
 	{
-
         glGenTextures(1, &m_ID);
         glBindTexture(GL_TEXTURE_2D, m_ID); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
         // set the texture wrapping parameters
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         // set texture filtering parameters
 
         if (nearest)
@@ -52,7 +51,7 @@ namespace engine
             }
             glGenerateMipmap(GL_TEXTURE_2D);
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_LOD, -1);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LOD, 2);
