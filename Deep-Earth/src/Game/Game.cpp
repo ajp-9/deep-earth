@@ -15,7 +15,7 @@ Game::Game()
 
 	m_Shader.bind();
 
-	m_Shader.setProjectionMatrix(glm::perspective(glm::radians(45.0f), float(m_Engine.m_Application.getWindowDimensions().x) / float(m_Engine.m_Application.getWindowDimensions().y), 0.25f, 750.0f));
+	m_Shader.setProjectionMatrix(glm::perspective(glm::radians(45.0f), float(m_Engine.m_Application.getWindowDimensions().x) / float(m_Engine.m_Application.getWindowDimensions().y), 0.75f, 1000.0f));
 }
 
 void Game::run()

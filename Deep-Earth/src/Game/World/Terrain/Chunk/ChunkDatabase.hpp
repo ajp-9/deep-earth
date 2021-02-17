@@ -1,51 +1,41 @@
 #pragma once
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/hash.hpp>
+#include <unordered_map>
+#include <queue>
+
 #include "Chunk.hpp"
 
-struct ChunkDatabase
+class ChunkDatabase
 {
-	inline void addChunk(std::shared_ptr<Chunk>& chunk)
+public:
+
+	~ChunkDatabase()
 	{
-		auto it = std::find_if(m_Chunks.begin(), m_Chunks.end(), [&chunk](std::shared_ptr<Chunk>& val) { return val->getPosition() == chunk->getPosition(); });
-		if (it == m_Chunks.end())
-			m_Chunks.push_back(chunk);
+		m_ChunkHash.clear();
+		m_Chunks.clear();
 	}
 
-	inline void eraseChunk(glm::ivec3& position)
-	{
-		auto it = std::find_if(m_Chunks.begin(), m_Chunks.end(), [&position](std::shared_ptr<Chunk>& val) { return val->getPosition() == position; });
-		if (it != m_Chunks.end())
-			m_Chunks.erase(it);
-		else
-			std::cout << "ERROR::<ChunkDatabase::eraseChunk()>: Can't find chunk!\n";
-	}
+	void addChunk(std::shared_ptr<Chunk>& chunk);
+	void removeChunk(glm::ivec3 position);
 
-	inline std::shared_ptr<Chunk>& getChunk(glm::ivec3 position)
-	{
-		auto it = std::find_if(m_Chunks.begin(), m_Chunks.end(), [&position](std::shared_ptr<Chunk>& val) { return val->getPosition() == position; });
-		return m_Chunks.at(std::distance(m_Chunks.begin(), it));
-	}
+	// Adds a chunk position to the queue of chunk meshes to build. 
+	void addChunkMeshToQueue(glm::ivec3 position, bool buildNeighbors);
+	void buildChunkMeshFromQueue();
 
-	inline void getChunkWCallback(glm::ivec3 position, std::weak_ptr<Chunk>& senderChunk)
-	{
-		auto it = std::find_if(m_Chunks.begin(), m_Chunks.end(), [&position](std::shared_ptr<Chunk>& val) { return val->getPosition() == position; });
+	//std::weak_ptr<Chunk>& getChunk(glm::ivec3 position);
+	void getChunkWCallback(glm::ivec3 position, std::weak_ptr<Chunk>& chunk);
 
-		if (it != m_Chunks.end())
-			senderChunk = m_Chunks.at(std::distance(m_Chunks.begin(), it));
-	}
+	bool hasChunk(glm::vec3 position);
 
-	inline bool isChunk(glm::ivec3 position)
-	{
-		auto it = std::find_if(m_Chunks.begin(), m_Chunks.end(), [&position](std::shared_ptr<Chunk>& val) { return val->getPosition() == position; });
+	std::vector<std::shared_ptr<Chunk>>& getAllChunks() { return m_Chunks; }
 
-		if (it != m_Chunks.end())
-			return true;
-		else
-			return false;
-	}
+private:
 
-	// Is a shared ptr for space & weak_ptrs
-
-	// ree vector is so goddamn slow, try unordered map
 	std::vector<std::shared_ptr<Chunk>> m_Chunks;
+	// Fast way of finding a chunk from position.
+	std::unordered_map<glm::ivec3, std::weak_ptr<Chunk>> m_ChunkHash;
+
+	std::queue<std::pair<glm::ivec3, bool>> m_ChunkMeshesQueue;
 };

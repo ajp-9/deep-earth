@@ -2,7 +2,6 @@
 
 #include "Chunk.hpp"
 #include "ChunkDatabase.hpp"
-#include "ChunkDatabaseNEW.hpp"
 
 class ChunkManager
 {
@@ -19,5 +18,4 @@ public:
 private:
 
 	ChunkDatabase m_ChunkDatabase;
-	ChunkDatabaseNEW NEW;
 };
