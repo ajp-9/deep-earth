@@ -13,7 +13,7 @@ void Terrain::render(engine::Shader3D& shader, glm::vec3& playerPos)
 
 	/*static uint i = 0;
 	i++;
-	if (i == 50)
+	if (i == 5)
 	{
 		m_ChunkManager.loadChunks(m_NodeManager, playerPos);
 		i = 0;

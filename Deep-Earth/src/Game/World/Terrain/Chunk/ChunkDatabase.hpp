@@ -31,7 +31,6 @@ public:
 
 	std::vector<std::shared_ptr<Chunk>>& getAllChunks() { return m_Chunks; }
 
-private:
 
 	std::vector<std::shared_ptr<Chunk>> m_Chunks;
 	// Fast way of finding a chunk from position.

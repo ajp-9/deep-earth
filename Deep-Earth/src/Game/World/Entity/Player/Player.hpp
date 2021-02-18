@@ -21,8 +21,8 @@ private:
 
     bool firstMouse = true;
 
-    const float SPEED = .1f;
-    const float FAST_SPEED = 3.0f;
+    const float SPEED = .25f;
+    const float FAST_SPEED = 2.5f;
     const float SENSITIVITY = .05f; // change this value to your liking
 
     float m_CurrentSpeed = SPEED;

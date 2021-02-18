@@ -5,8 +5,6 @@
 #include "../../../../Engine/OpenGL/VertexArray.hpp"
 #include "../../../../Engine/Renderer/Shader/Shader3D.hpp"
 #include "../Node/NodeManager.hpp"
-#include "../../../../Engine/Util/Math.hpp"
-#include <iostream>
 
 #define CHUNK_SIZE 32
 #define CHUNK_VOLUME 32768 // 32*32*32
@@ -21,16 +19,20 @@ public:
 	Chunk(NodeManager& nodeManager, std::vector<Node>& m_Nodes, glm::ivec3& position, ChunkDatabase& chunkDatabase);
 	~Chunk();
 
+	// For player placing blocks
+	void addNode(Node& node, glm::ivec3 position);
+	// Sets node to air
+	void removeNode(glm::ivec3 position);
+
 	void render(engine::Shader3D& shader);
 	void tick();
 
 	Node& getNode(glm::ivec3 position);
-	void setNode(glm::ivec3 position, uint id);
-	
+	void setNode(Node& node, glm::ivec3 position);
+
 	inline const glm::ivec3& getPosition() { return m_Position; }
 
 	void getNeighboringChunks();
-
 
 	// Run after ALL chunks have been loaded.
 	void buildMesh(bool buildNeighbors);

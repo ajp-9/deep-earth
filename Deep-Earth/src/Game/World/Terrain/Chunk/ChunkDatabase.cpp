@@ -1,5 +1,7 @@
 #include "ChunkDatabase.hpp"
 
+#include <iostream>
+
 void ChunkDatabase::addChunk(std::shared_ptr<Chunk>& chunk)
 {
 	m_Chunks.emplace_back(chunk);

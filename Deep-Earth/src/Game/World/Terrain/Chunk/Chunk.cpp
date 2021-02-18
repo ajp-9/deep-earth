@@ -1,10 +1,11 @@
 #include "Chunk.hpp"
 
-#include <algorithm>
+#include <iostream>
 #include "../Node/Type/BaseBlockType.hpp"
+#include "../../../../Engine/Util/Math.hpp"
 
 #define PROFILE
-#include "../../../../Engine/Util/Profile.hpp"
+#include "../../../../Engine/Util/Profile.hpp"\
 
 #include "ChunkDatabase.hpp"
 
@@ -13,6 +14,8 @@ Chunk::Chunk(NodeManager& nodeManager, glm::ivec3 position, ChunkDatabase& chunk
 {
 	for (int x = 0; x < CHUNK_VOLUME; x++)
 		m_Nodes.at(x) = nodeManager.getNode(node::grass);
+
+	removeNode(glm::ivec3(31));
 }
 
 Chunk::Chunk(NodeManager& nodeManager, std::vector<Node>& m_Nodes, glm::ivec3& position, ChunkDatabase& chunkDatabase)
@@ -33,6 +36,89 @@ Chunk::~Chunk()
 		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z + 1), false);
 	if (!m_ChunkRef_bottom.expired())
 		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z - 1), false);
+}
+
+void Chunk::addNode(Node& node, glm::ivec3 position)
+{
+	setNode(node, position);
+
+	// front
+	if (!position.y)
+	{
+		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y - 1, m_Position.z), false);
+	}
+
+	// front right
+	if (position.x == CHUNK_SIZE - 1)
+	{
+		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x + 1, m_Position.y, m_Position.z), false);
+	}
+
+	// back
+	if (position.y == CHUNK_SIZE - 1)
+	{
+		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y + 1, m_Position.z), false);
+	}
+
+	// front left
+	if (!position.x)
+	{
+		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x - 1, m_Position.y, m_Position.z), false);
+	}
+
+	// top
+	if (position.z == CHUNK_SIZE - 1)
+	{
+		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z + 1), false);
+	}
+
+	// bottom
+	if (!position.z)
+	{
+		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z - 1), false);
+	}
+}
+
+void Chunk::removeNode(glm::ivec3 position)
+{
+	Node node = Node(node::air);
+	setNode(node, position);
+
+	// front
+	if (!position.y)
+	{
+		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y - 1, m_Position.z), false);
+	}
+
+	// front right
+	if (position.x == CHUNK_SIZE - 1)
+	{
+		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x + 1, m_Position.y, m_Position.z), false);
+	}
+
+	// back
+	if (position.y == CHUNK_SIZE - 1)
+	{
+		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y + 1, m_Position.z), false);
+	}
+
+	// front left
+	if (!position.x)
+	{
+		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x - 1, m_Position.y, m_Position.z), false);
+	}
+
+	// top
+	if (position.z == CHUNK_SIZE - 1)
+	{
+		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z + 1), false);
+	}
+
+	// bottom
+	if (!position.z)
+	{
+		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z - 1), false);
+	}
 }
 
 void Chunk::render(engine::Shader3D& shader)
@@ -64,7 +150,7 @@ inline Node& Chunk::getNode(glm::ivec3 position)
 	}
 }
 
-inline void Chunk::setNode(glm::ivec3 position, uint id)
+void Chunk::setNode(Node& node, glm::ivec3 position)
 {
 	uint flat = engine::math::DimensionalAndFlat::getFlatFrom3D(position, CHUNK_SIZE);
 
@@ -74,7 +160,7 @@ inline void Chunk::setNode(glm::ivec3 position, uint id)
 	}
 	else
 	{
-		m_Nodes.at(flat) = Node(id);
+		m_Nodes.at(flat) = node;
 	}
 }
 
@@ -130,14 +216,14 @@ void Chunk::buildMesh(bool buildNeighbors)
 		// front
 		if (bPosition.y)
 		{
-			doesFrontOcclude = m_NodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, CHUNK_SIZE - 1, bPosition.z)).m_ID)->doesOcclude;
+			doesFrontOcclude = m_NodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y - 1, bPosition.z)).m_ID)->doesOcclude;
 		}
 		else
 		{
 			if (!m_ChunkRef_front.expired())
 				doesFrontOcclude = m_NodeManager.getNodeType(tempChunkRef_front->getNode(glm::ivec3(bPosition.x, CHUNK_SIZE - 1, bPosition.z)).m_ID)->doesOcclude;
 			else
-				doesFrontOcclude = false;
+				doesFrontOcclude = true;
 		}
 
 		// front right
@@ -150,39 +236,39 @@ void Chunk::buildMesh(bool buildNeighbors)
 			if (!m_ChunkRef_frontRight.expired())
 				doesFrontRightOcclude = m_NodeManager.getNodeType(tempChunkRef_frontRight->getNode(glm::ivec3(0, bPosition.y, bPosition.z)).m_ID)->doesOcclude;
 			else
-				doesFrontRightOcclude = false;
+				doesFrontRightOcclude = true;
 		}
 
 		// back
 		if (bPosition.y != CHUNK_SIZE - 1)
 		{
-			doesBackOcclude = m_NodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, 0, bPosition.z)).m_ID)->doesOcclude;
+			doesBackOcclude = m_NodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y + 1, bPosition.z)).m_ID)->doesOcclude;
 		}
 		else
 		{
 			if (!m_ChunkRef_back.expired())
 				doesBackOcclude = m_NodeManager.getNodeType(tempChunkRef_back->getNode(glm::ivec3(bPosition.x, 0, bPosition.z)).m_ID)->doesOcclude;
 			else
-				doesBackOcclude = false;
+				doesBackOcclude = true;
 		}
 
 		// front left
 		if (bPosition.x)
 		{
-			doesFrontLeftOcclude = m_NodeManager.getNodeType(getNode(glm::ivec3(CHUNK_SIZE - 1, bPosition.y, bPosition.z)).m_ID)->doesOcclude;
+			doesFrontLeftOcclude = m_NodeManager.getNodeType(getNode(glm::ivec3(bPosition.x - 1, bPosition.y, bPosition.z)).m_ID)->doesOcclude;
 		}
 		else
 		{
 			if (!m_ChunkRef_frontLeft.expired())
 				doesFrontLeftOcclude = m_NodeManager.getNodeType(tempChunkRef_frontLeft->getNode(glm::ivec3(CHUNK_SIZE - 1, bPosition.y, bPosition.z)).m_ID)->doesOcclude;
 			else
-				doesFrontLeftOcclude = false;
+				doesFrontLeftOcclude = true;
 		}
 
 		// top
 		if (bPosition.z != CHUNK_SIZE - 1)
 		{
-			doesTopOcclude = m_NodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y, 0)).m_ID)->doesOcclude;
+			doesTopOcclude = m_NodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y, bPosition.z + 1)).m_ID)->doesOcclude;
 		}
 		else
 		{
@@ -195,14 +281,14 @@ void Chunk::buildMesh(bool buildNeighbors)
 		// bottom
 		if (bPosition.z)
 		{
-			doesBottomOcclude = m_NodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y, CHUNK_SIZE - 1)).m_ID)->doesOcclude;
+			doesBottomOcclude = m_NodeManager.getNodeType(getNode(glm::ivec3(bPosition.x, bPosition.y, bPosition.z - 1)).m_ID)->doesOcclude;
 		}
 		else
 		{
 			if (!m_ChunkRef_bottom.expired())
 				doesBottomOcclude = m_NodeManager.getNodeType(tempChunkRef_bottom->getNode(glm::ivec3(bPosition.x, bPosition.y, CHUNK_SIZE - 1)).m_ID)->doesOcclude;
 			else
-				doesBottomOcclude = false;
+				doesBottomOcclude = true;
 		}
 
 		std::pair<std::vector<engine::Vertex>, std::vector<uint>> bVerticesWIndices = m_NodeManager.getNodeType(b.m_ID)->getVerticesWIndices(b.m_ID, bPosition, greatestIndex,
