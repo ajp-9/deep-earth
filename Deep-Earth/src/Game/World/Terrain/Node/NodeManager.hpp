@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "Type/BaseBlockType.hpp"
+#include "Type/NodeType.hpp"
 #include "Raw/Node.hpp"
 
 namespace node
@@ -21,9 +21,9 @@ struct NodeManager
 	NodeManager();
 
 	Node getNode(uint id);
-	const std::unique_ptr<BaseBlockType>& getNodeType(uint id);
+	const std::unique_ptr<NodeType>& getNodeType(uint id);
 
 private:
 
-	std::vector<std::unique_ptr<BaseBlockType>> m_NodeTypes;
+	std::vector<std::unique_ptr<NodeType>> m_NodeTypes;
 };

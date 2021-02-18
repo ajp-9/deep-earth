@@ -1,7 +1,6 @@
 #include "Chunk.hpp"
 
 #include <iostream>
-#include "../Node/Type/BaseBlockType.hpp"
 #include "../../../../Engine/Util/Math.hpp"
 
 #define PROFILE
@@ -13,9 +12,7 @@ Chunk::Chunk(NodeManager& nodeManager, glm::ivec3 position, ChunkDatabase& chunk
 	: m_Position(position), m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE)), m_ChunkDatabase(chunkDatabase), m_NodeManager(nodeManager)
 {
 	for (int x = 0; x < CHUNK_VOLUME; x++)
-		m_Nodes.at(x) = nodeManager.getNode(node::grass);
-
-	removeNode(glm::ivec3(31));
+		m_Nodes.at(x) = nodeManager.getNode(node::sand);
 }
 
 Chunk::Chunk(NodeManager& nodeManager, std::vector<Node>& m_Nodes, glm::ivec3& position, ChunkDatabase& chunkDatabase)
@@ -308,7 +305,7 @@ void Chunk::buildMesh(bool buildNeighbors)
 	if(vertices.size() && indices.size())
 		m_VertexArray = std::make_unique<engine::gl::VertexArray>(vertices, indices);
 
-	if (buildNeighbors)
+	/*if (buildNeighbors)
 	{
 		if (!m_ChunkRef_front.expired())
 			m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y - 1, m_Position.z), false);
@@ -322,7 +319,7 @@ void Chunk::buildMesh(bool buildNeighbors)
 			m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z + 1), false);
 		if (!m_ChunkRef_bottom.expired())
 			m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z - 1), false);
-	}
+	}*/
 }
 
 //std::cout << m_Position.x << ", " << m_Position.y << ", " << m_Position.z << "\n";

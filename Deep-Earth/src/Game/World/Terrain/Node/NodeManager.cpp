@@ -18,7 +18,7 @@ Node NodeManager::getNode(uint id)
 	return Node(id);
 }
 
-const std::unique_ptr<BaseBlockType>& NodeManager::getNodeType(uint id)
+const std::unique_ptr<NodeType>& NodeManager::getNodeType(uint id)
 {
 	return m_NodeTypes.at(id);
 }

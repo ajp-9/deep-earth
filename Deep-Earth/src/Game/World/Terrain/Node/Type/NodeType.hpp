@@ -4,7 +4,7 @@
 #include "../../../../../Engine/Renderer/Model/Vertex.hpp"
 #include "../../../../../Engine/Util/TypeDefs.hpp"
 
-struct BaseBlockType
+struct NodeType
 {
 	// Get vertices with indices.
 	virtual std::pair<std::vector<engine::Vertex>, std::vector<uint>> getVerticesWIndices(uint ownID, glm::ivec3& localTransform, uint greatestIndex, bool hide_front, bool hide_frontRight, bool hide_back, bool hide_frontLeft, bool hide_top, bool hide_bottom);

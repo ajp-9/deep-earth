@@ -5,7 +5,7 @@
 #define PROFILE
 #include "../../../../Engine/Util/Profile.hpp"
 
-#define VIEW_DISTANCE 2
+#define VIEW_DISTANCE 6
 
 ChunkManager::ChunkManager()
 {}
@@ -14,7 +14,7 @@ void ChunkManager::loadChunks(NodeManager& nodeManager, glm::ivec3 playerPos)
 {
 	for (int x = (playerPos.x / 32) - VIEW_DISTANCE; x < (playerPos.x / 32) + VIEW_DISTANCE; x++) 
 		for (int y = (playerPos.y / 32) - VIEW_DISTANCE; y < (playerPos.y / 32) + VIEW_DISTANCE; y++) 
-			for (int z = 0; z < 3; z++)
+			for (int z = 0; z < 1; z++)
 			{
 				if (!m_ChunkDatabase.hasChunk(glm::ivec3(x, y, z)))
 				{
@@ -35,7 +35,6 @@ void ChunkManager::render(engine::Shader3D& shader)
 	for (auto& chunk : m_ChunkDatabase.getAllChunks())
 		chunk->render(shader);
 
-	m_ChunkDatabase.buildChunkMeshFromQueue();
 	m_ChunkDatabase.buildChunkMeshFromQueue();
 	m_ChunkDatabase.buildChunkMeshFromQueue();
 

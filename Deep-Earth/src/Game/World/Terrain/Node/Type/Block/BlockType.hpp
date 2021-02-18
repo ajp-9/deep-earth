@@ -1,9 +1,9 @@
 #pragma once
 
 #include <array>
-#include "../BaseBlockType.hpp"
+#include "../NodeType.hpp"
 
-struct BlockType : public BaseBlockType
+struct BlockType : public NodeType
 {
 	virtual std::pair<std::vector<engine::Vertex>, std::vector<uint>> getVerticesWIndices(uint ownID, glm::ivec3& localTransform, uint greatestIndex, bool hide_front, bool hide_frontRight, bool hide_back, bool hide_frontLeft, bool hide_top, bool hide_bottom) override;
 

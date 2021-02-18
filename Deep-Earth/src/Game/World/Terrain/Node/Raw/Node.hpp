@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "../Type/BaseBlockType.hpp"
+#include "../Type/NodeType.hpp"
 
 struct Node
 {

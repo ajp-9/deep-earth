@@ -1,6 +1,6 @@
-#include "BaseBlockType.hpp"
+#include "NodeType.hpp"
 
-std::pair<std::vector<engine::Vertex>, std::vector<uint>> BaseBlockType::getVerticesWIndices(uint ownID, glm::ivec3& localTransform, uint greatestIndex, bool hide_front, bool hide_frontRight, bool hide_back, bool hide_frontLeft, bool hide_top, bool hide_bottom)
+std::pair<std::vector<engine::Vertex>, std::vector<uint>> NodeType::getVerticesWIndices(uint ownID, glm::ivec3& localTransform, uint greatestIndex, bool hide_front, bool hide_frontRight, bool hide_back, bool hide_frontLeft, bool hide_top, bool hide_bottom)
 {
 	std::vector<uint> tempIndices = m_Indices;
 
@@ -12,7 +12,7 @@ std::pair<std::vector<engine::Vertex>, std::vector<uint>> BaseBlockType::getVert
 	return std::pair<std::vector<engine::Vertex>, std::vector<uint>>(m_Vertices, m_Indices);
 }
 
-void BaseBlockType::createMesh()
+void NodeType::createMesh()
 {
 	std::vector<engine::Vertex> vertices;
 
@@ -42,7 +42,7 @@ void BaseBlockType::createMesh()
 	createFaces();
 }
 
-std::vector<float> BaseBlockType::buildUV(int xT, int yT, int xS, int yS, int xB, int yB)
+std::vector<float> NodeType::buildUV(int xT, int yT, int xS, int yS, int xB, int yB)
 {
 	float a = .0625f;
 	std::vector<float> uvs =
