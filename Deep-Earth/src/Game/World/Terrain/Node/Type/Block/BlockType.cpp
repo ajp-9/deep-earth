@@ -4,9 +4,9 @@
 
 #include "../../../../../../Engine/Util/Math.hpp"
 
-std::pair<std::vector<engine::Vertex>, std::vector<uint>> BlockType::getVerticesWIndices(uint ownID, glm::ivec3& localTransform, uint greatestIndex, bool hide_front, bool hide_frontRight, bool hide_back, bool hide_frontLeft, bool hide_top, bool hide_bottom)
+std::pair<std::vector<engine::NodeVertex>, std::vector<uint>> BlockType::getVerticesWIndices(uint ownID, glm::ivec3& localTransform, uint greatestIndex, bool hide_front, bool hide_frontRight, bool hide_back, bool hide_frontLeft, bool hide_top, bool hide_bottom)
 {
-    std::vector<engine::Vertex> tempVertices;
+    std::vector<engine::NodeVertex> tempVertices;
     std::vector<uint> tempIndices;
 
     uint faces = 0;

@@ -8,8 +8,8 @@ struct DirtType : public BlockType
 
 private:
 
-	virtual std::vector<float> createUVs() override
+	virtual std::vector<float> createUVWs() override
 	{
-		return buildUV(2, 15, 2, 15, 2, 15);
+		return buildUVW(node::texture::dirt, node::texture::dirt, node::texture::dirt);
 	}
 };

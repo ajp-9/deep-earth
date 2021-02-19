@@ -11,7 +11,7 @@ struct AirType : public BlockType
 
 private:
 
-	virtual std::vector<float> createUVs() override
+	virtual std::vector<float> createUVWs() override
 	{
 		return std::vector<float>(0);
 	}

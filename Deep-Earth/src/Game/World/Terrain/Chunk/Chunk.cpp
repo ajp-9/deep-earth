@@ -186,7 +186,7 @@ void Chunk::buildMesh(bool buildNeighbors)
 {
 	getNeighboringChunks();
 
-	std::vector<engine::Vertex> vertices;
+	std::vector<engine::NodeVertex> vertices;
 	std::vector<uint> indices;
 
 	// Lock is slow for each block
@@ -288,7 +288,7 @@ void Chunk::buildMesh(bool buildNeighbors)
 				doesBottomOcclude = true;
 		}
 
-		std::pair<std::vector<engine::Vertex>, std::vector<uint>> bVerticesWIndices = m_NodeManager.getNodeType(b.m_ID)->getVerticesWIndices(b.m_ID, bPosition, greatestIndex,
+		std::pair<std::vector<engine::NodeVertex>, std::vector<uint>> bVerticesWIndices = m_NodeManager.getNodeType(b.m_ID)->getVerticesWIndices(b.m_ID, bPosition, greatestIndex,
 			doesFrontOcclude, doesFrontRightOcclude,
 			doesBackOcclude, doesFrontLeftOcclude,
 			doesTopOcclude, doesBottomOcclude);

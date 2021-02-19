@@ -8,8 +8,8 @@ struct GrassType : public BlockType
 
 private:
 
-	virtual std::vector<float> createUVs() override
+	virtual std::vector<float> createUVWs() override
 	{
-		return buildUV(0, 15, 1, 15, 2, 15);
+		return buildUVW(node::texture::grass, node::texture::grass_side, node::texture::dirt);
 	}
 };

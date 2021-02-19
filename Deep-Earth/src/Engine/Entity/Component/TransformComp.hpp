@@ -2,9 +2,12 @@
 
 #include <glm/glm.hpp>
 
-class TransformComp
+namespace engine
 {
-	glm::vec3 position;
-	glm::vec3 rotation;
-	float scale;
-};
+	class TransformComp
+	{
+		glm::vec3 position;
+		glm::vec3 rotation;
+		float scale;
+	};
+}

@@ -3,7 +3,7 @@
 #include <memory>
 #include "Type/NodeType.hpp"
 #include "Raw/Node.hpp"
-#include "../../../../Engine/Renderer/Model/Texture/TextureArray.hpp"
+#include "Texture/NodeTextureManager.hpp"
 
 namespace node
 {
@@ -27,4 +27,5 @@ struct NodeManager
 private:
 
 	std::vector<std::unique_ptr<NodeType>> m_NodeTypes;
+	NodeTextureManager m_NodeTextureManager;
 };

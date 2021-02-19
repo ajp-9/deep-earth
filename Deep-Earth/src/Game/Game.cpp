@@ -8,7 +8,7 @@
 #include "World/Terrain/Light/Light.hpp"
 
 Game::Game()
-	: m_Shader("res/shaders/3d/3d.vtx.glsl", "res/shaders/3d/3d.frg.glsl")
+	: m_Shader("shaders/tex_array/tex_array.vtx.glsl", "shaders/tex_array/tex_array.frg.glsl")
 {
 	m_Engine.m_Application.setMouseHidden(true);
 

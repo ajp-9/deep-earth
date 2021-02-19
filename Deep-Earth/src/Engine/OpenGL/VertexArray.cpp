@@ -40,6 +40,47 @@ namespace engine::gl
         glBindVertexArray(0);
 	}
 
+    VertexArray::VertexArray(std::vector<NodeVertex>& vertices, std::vector<uint>& indices)
+        : m_IndicesSize(indices.size())
+    {
+        // create buffers/arrays
+        glGenVertexArrays(1, &m_VAO);
+
+        glGenBuffers(1, &m_VBO);
+        glGenBuffers(1, &m_EBO);
+
+        glBindVertexArray(m_VAO);
+        // load data into vertex buffers
+        glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+        // A great thing about structs is that their memory layout is sequential for all its items.
+        // The effect is that we can simply pass a pointer to the struct and it translates perfectly to a glm::vec3/2 array which
+        // again translates to 3/2 floats which translates to a byte array.
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(NodeVertex), &vertices[0], GL_STATIC_DRAW);
+
+        // set the vertex attribute pointers
+        // vertex Positions
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(NodeVertex), (void*)0);
+        // vertex normals
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(NodeVertex), (void*)offsetof(NodeVertex, m_UVW));
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_IndicesSize * sizeof(uint), &indices[0], GL_STATIC_DRAW);
+
+        static float temp = 0;
+        for (auto& v : vertices)
+        {
+            if (v.m_UVW.z != temp)
+            {
+                std::cout << v.m_UVW.z << "\n";
+                temp = v.m_UVW.z;
+            }
+        }
+
+        glBindVertexArray(0);
+    }
+
     VertexArray::~VertexArray()
 	{
         if (m_VAO != 0)

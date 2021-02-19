@@ -2,22 +2,25 @@
 
 #include "../../../Util/TypeDefs.hpp"
 
-class TextureArray
+namespace engine
 {
-public:
+	class TextureArray
+	{
+	public:
 
-	TextureArray(uint maxTextures, uint textureSize);
-	~TextureArray();
+		TextureArray(uint maxTextures, uint textureSize);
+		~TextureArray();
 
-	void addTexture(const char* file);
+		void addTexture(const char* file);
 
-	void bind();
+		void bind();
 
-private:
+	private:
 
-	uint m_ID = 0;
+		uint m_ID = 0;
 
-	uint m_TextureCount = 0;
-	uint m_MaxTextures = 0;
-	uint m_TextureSize = 0;
-};
+		uint m_TextureCount = 0;
+		uint m_MaxTextures = 0;
+		uint m_TextureSize = 0;
+	};
+}

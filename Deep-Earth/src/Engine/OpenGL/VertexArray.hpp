@@ -13,6 +13,7 @@ namespace engine::gl
 
 		VertexArray();
 		VertexArray(std::vector<Vertex>& vertices, std::vector<uint>& indices);
+		VertexArray(std::vector<NodeVertex>& vertices, std::vector<uint>& indices);
 		~VertexArray();
 
 		void render();

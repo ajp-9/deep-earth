@@ -8,8 +8,8 @@ struct SandType : public BlockType
 
 private:
 
-	virtual std::vector<float> createUVs() override
+	virtual std::vector<float> createUVWs() override
 	{
-		return buildUV(0, 14, 0, 14, 0, 14);
+		return buildUVW(node::texture::sand, node::texture::sand, node::texture::sand);
 	}
 };
