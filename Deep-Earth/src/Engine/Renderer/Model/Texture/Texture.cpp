@@ -13,7 +13,7 @@ namespace engine
         m_ID = -1;
     }
 
-    Texture::Texture(const char* path, bool nearest)
+    Texture::Texture(const char* file, bool nearest)
 	{
         glGenTextures(1, &m_ID);
         glBindTexture(GL_TEXTURE_2D, m_ID); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
@@ -34,11 +34,11 @@ namespace engine
 
         }
 
-        // load image, create texture and generate mipmaps
+        // load image, create texture, and generate mipmaps
         stbi_set_flip_vertically_on_load(true);
 
         int width, height, nrChannels;
-        unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0); // maybe change to 0 from 4
+        unsigned char* data = stbi_load(file, &width, &height, &nrChannels, 0); // maybe change to 0 from 43
         if (data)
         {
             if (nrChannels == 4) // checks if png or not
@@ -58,7 +58,7 @@ namespace engine
         }
         else
         {
-            std::cout << "Texture::Texture: File at " << path << " failed to load!\n";
+            std::cout << "Texture::Texture: File at " << file << " failed to load!\n";
         }
         stbi_image_free(data);
         glBindTexture(GL_TEXTURE_2D, 0);

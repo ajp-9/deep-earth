@@ -3,6 +3,7 @@
 #include <memory>
 #include "Type/NodeType.hpp"
 #include "Raw/Node.hpp"
+#include "../../../../Engine/Renderer/Model/Texture/TextureArray.hpp"
 
 namespace node
 {

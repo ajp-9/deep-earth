@@ -77,5 +77,6 @@ std::vector<float> NodeType::buildUV(int xT, int yT, int xS, int yS, int xB, int
 		.0625f + (a * xB), .0625f + (a * yB),
 		0 + (a * xB), .0625f + (a * yB)
 	};
+
 	return uvs;
 }

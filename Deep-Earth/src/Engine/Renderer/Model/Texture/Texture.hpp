@@ -12,7 +12,7 @@ namespace engine
 		// Nearest specificies a texture paramater
 		// True for nearest. False for linear
 		Texture();
-		Texture(const char* path, bool nearest = true);
+		Texture(const char* file, bool nearest = true);
 		~Texture();
 
 		void bind();
