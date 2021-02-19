@@ -1,12 +1,18 @@
 #version 330 core
+
+in vec3 passTexCoord;
+
 out vec4 FragColor;
 
-in vec2 TexCoord;
-
 // texture sampler
-uniform sampler2D texture1;
+uniform sampler2DArray textureArray;
 
 void main()
 {
-	FragColor = texture(texture1, TexCoord);
+	FragColor = texture(textureArray, passTexCoord);
+
+	if (FragColor.a == 0)
+	{
+		discard;
+	}
 }
