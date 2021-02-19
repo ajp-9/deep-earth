@@ -50,36 +50,35 @@ void NodeType::createMesh()
 std::vector<float> NodeType::buildUVW(uint top_ID, uint sides_ID, uint bottom_ID)
 {
 	float top = NodeTextureManager::getWCoord(top_ID);
-	float sides = NodeTextureManager::getWCoord(sides_ID);	std::cout << sides << std::endl;
-
+	float sides = NodeTextureManager::getWCoord(sides_ID);
 	float bottom = NodeTextureManager::getWCoord(bottom_ID);
 
 	std::vector<float> uvws =
 	{
+		0, 0, sides,
+		1, 0, sides,
+		1, 1, sides,
+		0, 1, sides,
+
+		0, 0, sides,
+		1, 0, sides,
+		1, 1, sides,
+		0, 1, sides,
+
+		0, 0, sides,
+		1, 0, sides,
+		1, 1, sides,
+		0, 1, sides,
+
+		0, 0, sides,
+		1, 0, sides,
+		1, 1, sides,
+		0, 1, sides,
+
 		0, 0, top,
 		1, 0, top,
 		1, 1, top,
 		0, 1, top,
-
-		0, 0, sides,
-		1, 0, sides,
-		1, 1, sides,
-		0, 1, sides,
-
-		0, 0, sides,
-		1, 0, sides,
-		1, 1, sides,
-		0, 1, sides,
-
-		0, 0, sides,
-		1, 0, sides,
-		1, 1, sides,
-		0, 1, sides,
-
-		0, 0, sides,
-		1, 0, sides,
-		1, 1, sides,
-		0, 1, sides,
 
 		0, 0, bottom,
 		1, 0, bottom,

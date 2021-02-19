@@ -12,7 +12,7 @@ Chunk::Chunk(NodeManager& nodeManager, glm::ivec3 position, ChunkDatabase& chunk
 	: m_Position(position), m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE)), m_ChunkDatabase(chunkDatabase), m_NodeManager(nodeManager)
 {
 	for (int x = 0; x < CHUNK_VOLUME; x++)
-		m_Nodes.at(x) = nodeManager.getNode(node::sand);
+		m_Nodes.at(x) = nodeManager.getNode(node::grass);
 }
 
 Chunk::Chunk(NodeManager& nodeManager, std::vector<Node>& m_Nodes, glm::ivec3& position, ChunkDatabase& chunkDatabase)

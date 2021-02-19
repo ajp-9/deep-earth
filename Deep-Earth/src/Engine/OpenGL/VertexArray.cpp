@@ -68,16 +68,6 @@ namespace engine::gl
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_IndicesSize * sizeof(uint), &indices[0], GL_STATIC_DRAW);
 
-        static float temp = 0;
-        for (auto& v : vertices)
-        {
-            if (v.m_UVW.z != temp)
-            {
-                std::cout << v.m_UVW.z << "\n";
-                temp = v.m_UVW.z;
-            }
-        }
-
         glBindVertexArray(0);
     }
 
