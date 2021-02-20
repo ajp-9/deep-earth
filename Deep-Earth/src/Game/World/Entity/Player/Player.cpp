@@ -24,9 +24,9 @@ void Player::tryMouseClick(engine::Application& application, ChunkManager& chunk
 void Player::tryBreakBlock(ChunkManager& chunkManager)
 {
     glm::vec3 rayPosition = m_Position;
-    for (uint i = 0; i < 100U; i++)
+    for (uint i = 0; i < 500U; i++)
     {
-        rayPosition += m_Front * .25f;
+        rayPosition += m_Front * .025f;
 
         if (chunkManager.removeNode(rayPosition))
             break;
@@ -36,12 +36,21 @@ void Player::tryBreakBlock(ChunkManager& chunkManager)
 void Player::tryPlaceBlock(ChunkManager& chunkManager)
 {
     glm::vec3 rayPosition = m_Position;
-    for (uint i = 0; i < 100U; i++)
-    {
-        rayPosition += m_Front * .25f;
 
-        if (chunkManager.addNode(Node(node::sand), rayPosition))
+    glm::vec3 lastRayPosition = rayPosition;
+    for (uint i = 0; i < 500U; i++)
+    {
+        rayPosition += m_Front * .025f;
+
+        if (chunkManager.getNode(rayPosition).m_ID == node::air)
+        {
+            lastRayPosition = rayPosition;
+        }
+        else
+        {
+            chunkManager.addNode(Node(node::sand), lastRayPosition);
             break;
+        }
     }
 }
 

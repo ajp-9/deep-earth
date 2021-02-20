@@ -22,8 +22,8 @@ public:
 	// Returns true for successful
 	inline bool removeNode(glm::vec3 specificPosition) { return m_ChunkDatabase.removeNode(specificPosition); }
 
-	const Node getNode(glm::vec3 specificPosition) { m_ChunkDatabase.getNode(specificPosition); }
-	const Node getNode(glm::ivec3 nodePosition) { m_ChunkDatabase.getNode(nodePosition); }
+	const Node getNode(glm::vec3 specificPosition) { return m_ChunkDatabase.getNode(specificPosition); }
+	const Node getNode(glm::ivec3 nodePosition) { return m_ChunkDatabase.getNode(nodePosition); }
 
 private:
 
