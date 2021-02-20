@@ -28,8 +28,8 @@ void Player::tryBreakBlock(ChunkManager& chunkManager)
     {
         rayPosition += m_Front * .25f;
 
-        if (chunkManager.removeNode(rayPosition));
-            //break;
+        if (chunkManager.removeNode(rayPosition))
+            break;
     }
 }
 
@@ -40,8 +40,8 @@ void Player::tryPlaceBlock(ChunkManager& chunkManager)
     {
         rayPosition += m_Front * .25f;
 
-        if (chunkManager.addNode(Node(node::sand), rayPosition));
-            //break;
+        if (chunkManager.addNode(Node(node::sand), rayPosition))
+            break;
     }
 }
 

@@ -41,9 +41,16 @@ bool ChunkDatabase::addNode(Node node, glm::vec3 specificPosition)
 
 	if (!chunk.expired())
 	{
-		chunk.lock()->addNode(node, inChunkNodePosition);
+		if (chunk.lock()->getNode(inChunkNodePosition).m_ID == node::air)
+		{
+			chunk.lock()->addNode(node, inChunkNodePosition);
 
-		return true;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	else
 	{
@@ -70,9 +77,16 @@ bool ChunkDatabase::removeNode(glm::vec3 specificPosition)
 
 	if (!chunk.expired())
 	{
-		chunk.lock()->removeNode(inChunkNodePosition);
+		if (chunk.lock()->getNode(inChunkNodePosition).m_ID != node::air)
+		{
+			chunk.lock()->removeNode(inChunkNodePosition);
 
-		return true;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	else
 	{

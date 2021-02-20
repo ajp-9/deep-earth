@@ -22,6 +22,7 @@ public:
 
 	// For player placing blocks
 	// Returns true for successful
+	// Only sets block if node ID is 0
 	bool addNode(Node node, glm::vec3 specificPosition);
 	// Sets node to air
 	// Returns true for successful
