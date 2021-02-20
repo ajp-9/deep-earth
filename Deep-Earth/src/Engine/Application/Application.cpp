@@ -58,6 +58,22 @@ namespace engine
         return !glfwWindowShouldClose(m_Window);
     }
 
+    bool Application::isLeftMouseBtnClicked()
+    {
+        if (glfwGetMouseButton(m_Window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+            return true;
+        else
+            return false;
+    }
+
+    bool Application::isRightMouseBtnClicked()
+    {
+        if (glfwGetMouseButton(m_Window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+            return true;
+        else
+            return false;
+    }
+
     bool Application::getInput(int key)
     {
         return glfwGetKey(m_Window, key);

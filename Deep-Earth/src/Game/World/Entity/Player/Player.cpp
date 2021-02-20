@@ -5,18 +5,52 @@ Player::Player(glm::vec3 position)
 	this->m_Position = position;
 }
 
-void Player::update(engine::Application& application)
+void Player::update(engine::Application& application, ChunkManager& chunkManager)
 {
+    tryMouseClick(application, chunkManager);
     tryKeyPress(application);
     tryMoveMouse(application);
+}
+
+void Player::tryMouseClick(engine::Application& application, ChunkManager& chunkManager)
+{
+    if (application.isLeftMouseBtnClicked())
+        tryBreakBlock(chunkManager);
+
+    if (application.isRightMouseBtnClicked())
+        tryPlaceBlock(chunkManager);
+}
+
+void Player::tryBreakBlock(ChunkManager& chunkManager)
+{
+    glm::vec3 rayPosition = m_Position;
+    for (uint i = 0; i < 75U; i++)
+    {
+        rayPosition += m_Front * .25f;
+
+        if (chunkManager.removeNode(rayPosition));
+            //break;
+    }
+}
+
+void Player::tryPlaceBlock(ChunkManager& chunkManager)
+{
+    glm::vec3 rayPosition = m_Position;
+    for (uint i = 0; i < 75U; i++)
+    {
+        rayPosition += m_Front * .25f;
+
+        if (chunkManager.addNode(Node(node::sand), rayPosition))
+            break;
+    }
 }
 
 void Player::tryKeyPress(engine::Application& application)
 {
     if (!application.getInput(GLFW_KEY_LEFT_SHIFT))
-        m_CurrentSpeed = SPEED;
+        m_CurrentSpeed = c_Speed;
     else
-        m_CurrentSpeed = FAST_SPEED;
+        m_CurrentSpeed = c_FastSpeed;
 
     if (application.getInput(GLFW_KEY_W))
         move(FORWARD);
@@ -40,31 +74,31 @@ void Player::tryMoveMouse(engine::Application& application)
     {
         if (firstMouse)
         {
-            lastX = mousePos.x;
-            lastY = mousePos.y;
+            m_LastX = mousePos.x;
+            m_LastY = mousePos.y;
             firstMouse = false;
         }
 
         float xoffset = mousePos.x;
         float yoffset = -mousePos.y; // reversed since y-coordinates go from bottom to top
-        lastX = mousePos.x;
-        lastY = mousePos.y;
+        m_LastX = mousePos.x;
+        m_LastY = mousePos.y;
 
-        xoffset *= SENSITIVITY;
-        yoffset *= SENSITIVITY;
+        xoffset *= c_Sensitivity;
+        yoffset *= c_Sensitivity;
 
-        yaw += xoffset;
-        pitch += yoffset;
+        m_Yaw += xoffset;
+        m_Pitch += yoffset;
 
         // make sure that when pitch is out of bounds, screen doesn't get flipped
-        if (pitch > 89.0f)
-            pitch = 89.0f;
-        if (pitch < -89.0f)
-            pitch = -89.0f;
+        if (m_Pitch > 89.0f)
+            m_Pitch = 89.0f;
+        if (m_Pitch < -89.0f)
+            m_Pitch = -89.0f;
 
-        m_Front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        m_Front.z = sin(glm::radians(pitch));
-        m_Front.y = -sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        m_Front.x = cos(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
+        m_Front.z = sin(glm::radians(m_Pitch));
+        m_Front.y = -sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
         m_Front = glm::normalize(m_Front);
         m_Right = glm::normalize(glm::cross(m_Front, m_Up));
     }

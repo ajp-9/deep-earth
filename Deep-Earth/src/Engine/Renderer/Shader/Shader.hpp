@@ -13,7 +13,7 @@ namespace engine
 
         void setLocations() {}
         // activate the shader
-        void bind();
+        void bind() const;
         // utility uniform functions
         void setBool(const std::string& name, bool value) const;
         void setInt(const std::string& name, int value) const;

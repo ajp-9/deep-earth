@@ -16,6 +16,8 @@ namespace engine
 
 		bool update();
 
+		bool isLeftMouseBtnClicked();
+		bool isRightMouseBtnClicked();
 		bool getInput(int key);
 		glm::vec2 getMousePosition();
 		glm::ivec2 getWindowDimensions();

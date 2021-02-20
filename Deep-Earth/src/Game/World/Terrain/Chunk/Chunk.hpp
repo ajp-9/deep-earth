@@ -19,18 +19,18 @@ public:
 	Chunk(NodeManager& nodeManager, std::vector<Node>& m_Nodes, glm::ivec3& position, ChunkDatabase& chunkDatabase);
 	~Chunk();
 
-	// For player placing blocks
-	void addNode(Node& node, glm::ivec3 position);
-	// Sets node to air
-	void removeNode(glm::ivec3 position);
-
 	void render(engine::Shader3D& shader);
 	void tick();
 
-	Node& getNode(glm::ivec3 position);
-	void setNode(Node& node, glm::ivec3 position);
+	// For player placing blocks
+	void addNode(Node& node, glm::ivec3 nodePosition);
+	// Sets node to air
+	void removeNode(glm::ivec3 nodePosition);
 
-	inline const glm::ivec3& getPosition() { return m_Position; }
+	const Node getNode(glm::ivec3 nodePosition) const;
+	void setNode(Node node, glm::ivec3 nodePosition);
+
+	inline const glm::ivec3& getPosition() const { return m_Position; }
 
 	void getNeighboringChunks();
 

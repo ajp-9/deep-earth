@@ -73,7 +73,7 @@ namespace engine
     }
 
     // activate the shader
-    void Shader::bind()
+    void Shader::bind() const
     {
         glUseProgram(m_ID);
     }
