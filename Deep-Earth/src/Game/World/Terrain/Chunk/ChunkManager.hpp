@@ -7,7 +7,7 @@ class ChunkManager
 {
 public:
 
-	ChunkManager();
+	ChunkManager(NodeManager& nodeManager) : m_ChunkDatabase(nodeManager) {}
 
 	void loadChunks(NodeManager& nodeManager, glm::vec3 playerPos);
 

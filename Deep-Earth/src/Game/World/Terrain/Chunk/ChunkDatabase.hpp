@@ -11,13 +11,15 @@ class ChunkDatabase
 {
 public:
 
+	ChunkDatabase(NodeManager& nodeManager) : m_NodeManager(nodeManager) {}
+
 	~ChunkDatabase()
 	{
 		m_ChunkHash.clear();
 		m_Chunks.clear();
 	}
 
-	void addChunk(std::shared_ptr<Chunk>& chunk);
+	void addChunk(std::shared_ptr<Chunk> chunk);
 	void removeChunk(glm::ivec3 position);
 
 	// For player placing blocks
@@ -43,10 +45,13 @@ public:
 
 	std::vector<std::shared_ptr<Chunk>>& getAllChunks() { return m_Chunks; }
 
+private:
 
 	std::vector<std::shared_ptr<Chunk>> m_Chunks;
 	// Fast way of finding a chunk from position.
 	std::unordered_map<glm::ivec3, std::weak_ptr<Chunk>> m_ChunkHash;
 
 	std::vector<std::pair<glm::ivec3, bool>> m_ChunkMeshesQueue;
+
+	NodeManager& m_NodeManager;
 };

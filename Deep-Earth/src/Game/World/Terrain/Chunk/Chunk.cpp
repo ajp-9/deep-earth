@@ -8,16 +8,29 @@
 
 #include "ChunkDatabase.hpp"
 
-Chunk::Chunk(NodeManager& nodeManager, glm::ivec3 position, ChunkDatabase& chunkDatabase)
+Chunk::Chunk(glm::ivec3 position, NodeManager& nodeManager, ChunkDatabase& chunkDatabase, bool empty, bool buildSelfAndNeighbors)
 	: m_Position(position), m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE)), m_ChunkDatabase(chunkDatabase), m_NodeManager(nodeManager)
 {
-	for (int x = 0; x < CHUNK_VOLUME; x++)
-		m_Nodes.at(x) = nodeManager.getNode(node::grass);
+	if (!empty)
+	{
+		for (int x = 0; x < CHUNK_VOLUME; x++)
+			m_Nodes.at(x) = nodeManager.getNode(node::grass);
+	}
+
+	if (buildSelfAndNeighbors)
+		buildMesh(true);
 }
 
-Chunk::Chunk(NodeManager& nodeManager, std::vector<Node>& m_Nodes, glm::ivec3& position, ChunkDatabase& chunkDatabase)
-	: m_Position(position), m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE)), m_ChunkDatabase(chunkDatabase), m_NodeManager(nodeManager)
+Chunk::Chunk(glm::ivec3& position, std::vector<Node>& nodes, NodeManager& nodeManager, ChunkDatabase& chunkDatabase)
+	: m_Position(position), m_Nodes(nodes),  m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE)), m_ChunkDatabase(chunkDatabase), m_NodeManager(nodeManager)
 {}
+
+Chunk::Chunk(glm::ivec3& position, std::vector<std::pair<Node, glm::ivec3>>& nodes, NodeManager& nodeManager, ChunkDatabase& chunkDatabase)
+	: m_Position(position), m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position* CHUNK_SIZE)), m_ChunkDatabase(chunkDatabase), m_NodeManager(nodeManager)
+{
+	for (auto& [node, position] : nodes)
+		setNode(node, position);
+}
 
 Chunk::~Chunk()
 {
@@ -50,6 +63,8 @@ void Chunk::tick()
 
 void Chunk::addNode(Node& node, glm::ivec3 nodePosition)
 {
+	getNeighboringChunks();
+
 	setNode(node, nodePosition);
 
 	m_ChunkDatabase.addChunkMeshToQueue(m_Position, false);
@@ -160,6 +175,18 @@ void Chunk::setNode(Node node, glm::ivec3 nodePosition)
 	{
 		m_Nodes.at(flat) = node;
 	}
+}
+
+void Chunk::makeNeighborsGetChunks()
+{
+	getNeighboringChunks();
+
+	m_ChunkRef_front.lock()->getNeighboringChunks();
+	m_ChunkRef_frontRight.lock()->getNeighboringChunks();
+	m_ChunkRef_back.lock()->getNeighboringChunks();
+	m_ChunkRef_frontLeft.lock()->getNeighboringChunks();
+	m_ChunkRef_top.lock()->getNeighboringChunks();
+	m_ChunkRef_bottom.lock()->getNeighboringChunks();
 }
 
 void Chunk::getNeighboringChunks()

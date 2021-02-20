@@ -15,8 +15,12 @@ class Chunk
 {
 public:
 
-	Chunk(NodeManager& nodeManager, glm::ivec3 position, ChunkDatabase& chunkDatabase);
-	Chunk(NodeManager& nodeManager, std::vector<Node>& m_Nodes, glm::ivec3& position, ChunkDatabase& chunkDatabase);
+	// Blank chunk
+	Chunk(glm::ivec3 position, NodeManager& nodeManager, ChunkDatabase& chunkDatabase, bool empty = false, bool buildSelfAndNeighbors = true);
+	// Everything already packaged up.
+	Chunk(glm::ivec3& position, std::vector<Node>& nodes, NodeManager& nodeManager, ChunkDatabase& chunkDatabase);
+	// Unpacked nodes thrown at random.
+	Chunk(glm::ivec3& position, std::vector<std::pair<Node, glm::ivec3>>& nodes, NodeManager& nodeManager, ChunkDatabase& chunkDatabase);
 	~Chunk();
 
 	void render(engine::Shader3D& shader);
@@ -32,6 +36,7 @@ public:
 
 	inline const glm::ivec3& getPosition() const { return m_Position; }
 
+	void makeNeighborsGetChunks();
 	void getNeighboringChunks();
 
 	// Run after ALL chunks have been loaded.

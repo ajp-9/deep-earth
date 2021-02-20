@@ -1,7 +1,7 @@
 #include "Terrain.hpp"
 
 Terrain::Terrain()
-	: m_Atlas("res/textures/atlas.png")
+	: m_ChunkManager(m_NodeManager), m_Atlas("res/textures/atlas.png")
 {
 	m_ChunkManager.loadChunks(m_NodeManager, glm::ivec3(0));
 }

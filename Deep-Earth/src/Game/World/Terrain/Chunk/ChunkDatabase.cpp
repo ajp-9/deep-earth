@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-void ChunkDatabase::addChunk(std::shared_ptr<Chunk>& chunk)
+void ChunkDatabase::addChunk(std::shared_ptr<Chunk> chunk)
 {
 	m_Chunks.emplace_back(chunk);
 	m_ChunkHash[chunk->getPosition()] = chunk;
@@ -25,22 +25,24 @@ void ChunkDatabase::removeChunk(glm::ivec3 position)
 bool ChunkDatabase::addNode(Node node, glm::vec3 specificPosition)
 {
 	glm::ivec3 nodePosition = glm::ivec3((int)std::floor(specificPosition.x + .5f),
-		(int)std::floor(specificPosition.y + .5f),
-		(int)std::floor(specificPosition.z + .5f));
+										 (int)std::floor(specificPosition.y + .5f),
+										 (int)std::floor(specificPosition.z + .5f));
 
 	glm::ivec3 chunkPosition = glm::ivec3((int)std::floor(float(nodePosition.x) / float((CHUNK_SIZE))),
-		(int)std::floor(float(nodePosition.y) / float((CHUNK_SIZE))),
-		(int)std::floor(float(nodePosition.z) / float((CHUNK_SIZE))));
+									      (int)std::floor(float(nodePosition.y) / float((CHUNK_SIZE))),
+									      (int)std::floor(float(nodePosition.z) / float((CHUNK_SIZE))));
 
 	glm::ivec3 inChunkNodePosition = glm::ivec3(nodePosition.x - (chunkPosition.x * (CHUNK_SIZE)),
-		nodePosition.y - (chunkPosition.y * (CHUNK_SIZE)),
-		nodePosition.z - (chunkPosition.z * (CHUNK_SIZE)));
+												nodePosition.y - (chunkPosition.y * (CHUNK_SIZE)),
+												nodePosition.z - (chunkPosition.z * (CHUNK_SIZE)));
 
 	std::weak_ptr<Chunk> chunk;
 	getChunkWCallback(chunkPosition, chunk);
 
+	// If chunk doesn't exist...
 	if (!chunk.expired())
 	{
+		// If block isn't air...
 		if (chunk.lock()->getNode(inChunkNodePosition).m_ID == node::air)
 		{
 			chunk.lock()->addNode(node, inChunkNodePosition);
@@ -54,7 +56,11 @@ bool ChunkDatabase::addNode(Node node, glm::vec3 specificPosition)
 	}
 	else
 	{
-		return false;
+		std::vector<std::pair<Node, glm::ivec3>> nodes = { std::make_pair(node, inChunkNodePosition) };
+		auto chunk = std::make_shared<Chunk>(chunkPosition, nodes, m_NodeManager, *this);
+		addChunk(chunk);
+
+		return true;
 	}
 }
 
@@ -154,6 +160,10 @@ void ChunkDatabase::buildChunkMeshFromQueue()
 		if (m_ChunkHash.find(position) != m_ChunkHash.end())
 		{
 			m_ChunkHash[position].lock()->buildMesh(buildNeighbors);
+		}
+		else
+		{
+			addChunk(std::make_shared<Chunk>(position, m_NodeManager, *this, true));
 		}
 
 		m_ChunkMeshesQueue.pop_back();

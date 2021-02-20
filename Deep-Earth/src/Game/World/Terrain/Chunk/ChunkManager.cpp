@@ -7,9 +7,6 @@
 
 #define VIEW_DISTANCE 6
 
-ChunkManager::ChunkManager()
-{}
-
 void ChunkManager::loadChunks(NodeManager& nodeManager, glm::vec3 playerPos)
 {
 	for (int x = (playerPos.x / 32) - VIEW_DISTANCE; x < (playerPos.x / 32) + VIEW_DISTANCE; x++) 
@@ -18,7 +15,7 @@ void ChunkManager::loadChunks(NodeManager& nodeManager, glm::vec3 playerPos)
 			{
 				if (!m_ChunkDatabase.hasChunk(glm::ivec3(x, y, z)))
 				{
-					std::shared_ptr<Chunk> chunk = std::make_shared<Chunk>(nodeManager, glm::ivec3(x, y, z), m_ChunkDatabase);
+					std::shared_ptr<Chunk> chunk = std::make_shared<Chunk>(glm::ivec3(x, y, z), nodeManager, m_ChunkDatabase);
 					m_ChunkDatabase.addChunk(chunk);
 					m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(x, y, z), true);
 				}
