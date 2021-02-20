@@ -7,6 +7,7 @@ Player::Player(glm::vec3 position)
 
 void Player::update(engine::Application& application, ChunkManager& chunkManager)
 {
+    // problem w/ updating, needs a queue of events to go through...
     tryMouseClick(application, chunkManager);
     tryKeyPress(application);
     tryMoveMouse(application);
@@ -60,8 +61,10 @@ void Player::tryPlaceBlock(ChunkManager& chunkManager)
         }
         else
         {
-            chunkManager.addNode(Node(node::sand), lastRayPosition);
-            break;
+            if (chunkManager.addNode(Node(node::sand), lastRayPosition))
+                break;
+            else
+                lastRayPosition = rayPosition;
         }
     }
 }

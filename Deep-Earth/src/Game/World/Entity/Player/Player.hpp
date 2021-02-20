@@ -34,7 +34,7 @@ private:
     const float c_FastSpeed = 2.5f;
     const float c_Sensitivity = .05f; // change this value to your liking
 
-    const uint c_TicksWaitTimeForBreakNPlace = 10;
+    const uint c_TicksWaitTimeForBreakNPlace = 8;
 
     uint m_TicksAgoBreak = 0;
     uint m_TicksAgoPlace = 0;
