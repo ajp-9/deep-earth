@@ -34,6 +34,11 @@ private:
     const float c_FastSpeed = 2.5f;
     const float c_Sensitivity = .05f; // change this value to your liking
 
+    const uint c_TicksWaitTimeForBreakNPlace = 10;
+
+    uint m_TicksAgoBreak = 0;
+    uint m_TicksAgoPlace = 0;
+
     float m_CurrentSpeed = c_Speed;
     float m_Yaw = -90.0f;	// yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
     float m_Pitch = 0.0f;

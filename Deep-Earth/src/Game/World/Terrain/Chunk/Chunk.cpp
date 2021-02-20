@@ -4,7 +4,7 @@
 #include "../../../../Engine/Util/Math.hpp"
 
 #define PROFILE
-#include "../../../../Engine/Util/Profile.hpp"\
+#include "../../../../Engine/Util/Profile.hpp"
 
 #include "ChunkDatabase.hpp"
 
@@ -13,8 +13,6 @@ Chunk::Chunk(NodeManager& nodeManager, glm::ivec3 position, ChunkDatabase& chunk
 {
 	for (int x = 0; x < CHUNK_VOLUME; x++)
 		m_Nodes.at(x) = nodeManager.getNode(node::grass);
-
-	//removeNode(glm::ivec3(0, 0, 31));
 }
 
 Chunk::Chunk(NodeManager& nodeManager, std::vector<Node>& m_Nodes, glm::ivec3& position, ChunkDatabase& chunkDatabase)

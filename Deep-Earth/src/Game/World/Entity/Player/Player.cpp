@@ -14,11 +14,23 @@ void Player::update(engine::Application& application, ChunkManager& chunkManager
 
 void Player::tryMouseClick(engine::Application& application, ChunkManager& chunkManager)
 {
-    if (application.isLeftMouseBtnClicked())
-        tryBreakBlock(chunkManager);
+    m_TicksAgoBreak++;
+    if (m_TicksAgoBreak >= c_TicksWaitTimeForBreakNPlace)
+    {
+        if (application.isLeftMouseBtnClicked())
+            tryBreakBlock(chunkManager);
 
-    if (application.isRightMouseBtnClicked())
-        tryPlaceBlock(chunkManager);
+        m_TicksAgoBreak = 0;
+    }
+
+    m_TicksAgoPlace++;
+    if (m_TicksAgoPlace >= c_TicksWaitTimeForBreakNPlace)
+    {
+        if (application.isRightMouseBtnClicked())
+            tryPlaceBlock(chunkManager);
+
+        m_TicksAgoPlace = 0;
+    }
 }
 
 void Player::tryBreakBlock(ChunkManager& chunkManager)
