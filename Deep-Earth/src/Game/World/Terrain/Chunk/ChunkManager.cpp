@@ -24,7 +24,7 @@ void ChunkManager::loadChunks(NodeManager& nodeManager, glm::vec3 playerPos)
 				}
 			}
 
-	m_ChunkDatabase.addNode(Node(node::sand), playerPos);
+	//m_ChunkDatabase.addNode(Node(node::sand), playerPos);
 }
 
 void ChunkManager::render(engine::Shader3D& shader)
@@ -36,7 +36,7 @@ void ChunkManager::render(engine::Shader3D& shader)
 	m_ChunkDatabase.buildChunkMeshFromQueue();
 	m_ChunkDatabase.buildChunkMeshFromQueue();
 
-	printf("%u\n", m_ChunkDatabase.m_ChunkMeshesQueue.size());
+	//printf("%u\n", m_ChunkDatabase.m_ChunkMeshesQueue.size());
 }
 
 void ChunkManager::update()
