@@ -3,6 +3,7 @@
 #include "../../../Engine/Renderer/Model/Texture/Texture.hpp"
 #include "Chunk/ChunkManager.hpp"
 #include "Node/NodeManager.hpp"
+#include "Generation/WorldGenerator.hpp"
 
 class Terrain
 {

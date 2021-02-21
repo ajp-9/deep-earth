@@ -16,7 +16,7 @@ class Chunk
 public:
 
 	// Blank chunk
-	Chunk(glm::ivec3 position, NodeManager& nodeManager, ChunkDatabase& chunkDatabase, bool empty = false, bool buildSelfAndNeighbors = true);
+	Chunk(glm::ivec3 position, NodeManager& nodeManager, ChunkDatabase& chunkDatabase, bool empty = false);
 	// Everything already packaged up.
 	Chunk(glm::ivec3& position, std::vector<Node>& nodes, NodeManager& nodeManager, ChunkDatabase& chunkDatabase);
 	// Unpacked nodes thrown at random.

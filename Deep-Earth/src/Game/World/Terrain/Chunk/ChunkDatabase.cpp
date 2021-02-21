@@ -147,7 +147,7 @@ void ChunkDatabase::addChunkMeshToQueue(glm::ivec3 position, bool buildNeighbors
 	auto it = std::find_if(m_ChunkMeshesQueue.begin(), m_ChunkMeshesQueue.end(), [&position](std::pair<glm::ivec3, bool>& val) { return val.first == position; });
 	if (it == m_ChunkMeshesQueue.end())
 	{
-		m_ChunkMeshesQueue.emplace_back(std::make_pair(position, buildNeighbors));
+		m_ChunkMeshesQueue.push_back(std::make_pair(position, buildNeighbors));
 	}
 }
 
@@ -157,6 +157,8 @@ void ChunkDatabase::buildChunkMeshFromQueue()
 	{
 		auto& [position, buildNeighbors] = m_ChunkMeshesQueue.back();
 
+		m_ChunkMeshesQueue.pop_back();
+
 		if (m_ChunkHash.find(position) != m_ChunkHash.end())
 		{
 			m_ChunkHash[position].lock()->buildMesh(buildNeighbors);
@@ -165,8 +167,6 @@ void ChunkDatabase::buildChunkMeshFromQueue()
 		{
 			addChunk(std::make_shared<Chunk>(position, m_NodeManager, *this, true));
 		}
-
-		m_ChunkMeshesQueue.pop_back();
 	}
 }
 

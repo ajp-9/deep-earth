@@ -34,7 +34,7 @@ public:
 	const Node getNode(glm::ivec3 nodePosition);
 
 	// Adds a chunk position to the queue of chunk meshes to build. 
-	void addChunkMeshToQueue(glm::ivec3 position, bool buildNeighbors);
+	void addChunkMeshToQueue(glm::ivec3 position, bool buildNeighbors = false);
 	void buildChunkMeshFromQueue();
 
 	//std::weak_ptr<Chunk>& getChunk(glm::ivec3 position);
@@ -45,7 +45,7 @@ public:
 
 	std::vector<std::shared_ptr<Chunk>>& getAllChunks() { return m_Chunks; }
 
-private:
+//private:
 
 	std::vector<std::shared_ptr<Chunk>> m_Chunks;
 	// Fast way of finding a chunk from position.
