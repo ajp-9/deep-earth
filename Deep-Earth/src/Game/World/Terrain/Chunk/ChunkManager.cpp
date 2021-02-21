@@ -11,7 +11,7 @@ void ChunkManager::loadChunks(NodeManager& nodeManager, glm::vec3 playerPos)
 {
 	for (int x = (playerPos.x / 32) - VIEW_DISTANCE; x < (playerPos.x / 32) + VIEW_DISTANCE; x++) 
 		for (int y = (playerPos.y / 32) - VIEW_DISTANCE; y < (playerPos.y / 32) + VIEW_DISTANCE; y++) 
-			for (int z = 0; z < 1; z++)
+			for (int z = 0; z < 4; z++)
 			{
 				if (!m_ChunkDatabase.hasChunk(glm::ivec3(x, y, z)))
 				{
@@ -32,6 +32,7 @@ void ChunkManager::render(engine::Shader3D& shader)
 	m_ChunkDatabase.buildChunkMeshFromQueue();
 	m_ChunkDatabase.buildChunkMeshFromQueue();
 	m_ChunkDatabase.buildChunkMeshFromQueue();
+
 }
 
 void ChunkManager::update()

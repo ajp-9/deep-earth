@@ -36,8 +36,7 @@ public:
 
 	inline const glm::ivec3& getPosition() const { return m_Position; }
 
-	void makeNeighborsGetChunks();
-	void getNeighboringChunks();
+	void getNeighboringChunks(bool buildingMesh = false);
 
 	// Run after ALL chunks have been loaded.
 	void buildMesh(bool buildNeighbors);
@@ -53,12 +52,12 @@ private:
 	ChunkDatabase& m_ChunkDatabase;
 	NodeManager& m_NodeManager;
 
-	std::weak_ptr<Chunk> m_ChunkRef_front;
-	std::weak_ptr<Chunk> m_ChunkRef_frontRight;
-	std::weak_ptr<Chunk> m_ChunkRef_back;
-	std::weak_ptr<Chunk> m_ChunkRef_frontLeft;
-	std::weak_ptr<Chunk> m_ChunkRef_top;
-	std::weak_ptr<Chunk> m_ChunkRef_bottom;
+	std::weak_ptr<Chunk> m_ChunkRef_front;     	 bool m_MeshSawMy_front = false;
+	std::weak_ptr<Chunk> m_ChunkRef_frontRight;	 bool m_MeshSawMy_frontRight = false;
+	std::weak_ptr<Chunk> m_ChunkRef_back;		 bool m_MeshSawMy_back = false;
+	std::weak_ptr<Chunk> m_ChunkRef_frontLeft;	 bool m_MeshSawMy_frontLeft = false;
+	std::weak_ptr<Chunk> m_ChunkRef_top;		 bool m_MeshSawMy_top = false;
+	std::weak_ptr<Chunk> m_ChunkRef_bottom;		 bool m_MeshSawMy_bottom = false;
 
 	std::vector<Node> m_Nodes = std::vector<Node>(CHUNK_VOLUME);
 	std::vector<Light> m_LightMap = std::vector<Light>(CHUNK_VOLUME);

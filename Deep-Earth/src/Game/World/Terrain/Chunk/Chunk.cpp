@@ -176,19 +176,7 @@ void Chunk::setNode(Node node, glm::ivec3 nodePosition)
 	}
 }
 
-void Chunk::makeNeighborsGetChunks()
-{
-	getNeighboringChunks();
-
-	m_ChunkRef_front.lock()->getNeighboringChunks();
-	m_ChunkRef_frontRight.lock()->getNeighboringChunks();
-	m_ChunkRef_back.lock()->getNeighboringChunks();
-	m_ChunkRef_frontLeft.lock()->getNeighboringChunks();
-	m_ChunkRef_top.lock()->getNeighboringChunks();
-	m_ChunkRef_bottom.lock()->getNeighboringChunks();
-}
-
-void Chunk::getNeighboringChunks()
+void Chunk::getNeighboringChunks(bool buildingMesh)
 {
 	if (m_ChunkRef_front.expired())
 		m_ChunkDatabase.getChunkWCallback(glm::ivec3(m_Position.x, m_Position.y - 1, m_Position.z), m_ChunkRef_front);
@@ -207,11 +195,32 @@ void Chunk::getNeighboringChunks()
 
 	if (m_ChunkRef_bottom.expired())
 		m_ChunkDatabase.getChunkWCallback(glm::ivec3(m_Position.x, m_Position.y, m_Position.z - 1), m_ChunkRef_bottom);
+
+	if (buildingMesh)
+	{
+		if (!m_ChunkRef_front.expired())
+			m_MeshSawMy_front = true;
+
+		if (!m_ChunkRef_frontRight.expired())
+			m_MeshSawMy_frontRight = true;
+
+		if (!m_ChunkRef_back.expired())
+			m_MeshSawMy_back = true;
+
+		if (!m_ChunkRef_frontLeft.expired())
+			m_MeshSawMy_frontLeft = true;
+
+		if (!m_ChunkRef_top.expired())
+			m_MeshSawMy_top = true;
+
+		if (!m_ChunkRef_bottom.expired())
+			m_MeshSawMy_bottom = true;
+	}
 }
 
 void Chunk::buildMesh(bool buildNeighbors)
 {
-	getNeighboringChunks();
+	getNeighboringChunks(true);
 
 	std::vector<engine::NodeVertex> vertices;
 	std::vector<uint> indices;
@@ -332,22 +341,33 @@ void Chunk::buildMesh(bool buildNeighbors)
 	if (vertices.size() && indices.size())
 		m_VertexArray = std::make_unique<engine::gl::VertexArray>(vertices, indices);
 	else
-		m_VertexArray.reset();
+		m_VertexArray.reset(); // To avoid ghost block when last node is destroyed
 
 	if (buildNeighbors)
 	{
 		if (!m_ChunkRef_front.expired())
-			m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y - 1, m_Position.z), false);
+			if (!m_ChunkRef_front.lock()->m_MeshSawMy_back)
+				m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y - 1, m_Position.z), false);
+
 		if (!m_ChunkRef_frontRight.expired())
-			m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x + 1, m_Position.y, m_Position.z), false);
+			if (!m_ChunkRef_frontRight.lock()->m_MeshSawMy_frontLeft)
+				m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x + 1, m_Position.y, m_Position.z), false);
+
 		if (!m_ChunkRef_back.expired())
-			m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y + 1, m_Position.z), false);
+			if (!m_ChunkRef_back.lock()->m_MeshSawMy_front)
+				m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y + 1, m_Position.z), false);
+
 		if (!m_ChunkRef_frontLeft.expired())
-			m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x - 1, m_Position.y, m_Position.z), false);
+			if (!m_ChunkRef_frontLeft.lock()->m_MeshSawMy_frontRight)
+				m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x - 1, m_Position.y, m_Position.z), false);
+
 		if (!m_ChunkRef_top.expired())
-			m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z + 1), false);
+			if (!m_ChunkRef_top.lock()->m_MeshSawMy_bottom)
+				m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z + 1), false);
+
 		if (!m_ChunkRef_bottom.expired())
-			m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z - 1), false);
+			if (!m_ChunkRef_bottom.lock()->m_MeshSawMy_top)
+				m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z - 1), false);
 	}
 }
 
