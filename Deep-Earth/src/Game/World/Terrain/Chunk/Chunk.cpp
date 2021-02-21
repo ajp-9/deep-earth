@@ -329,8 +329,10 @@ void Chunk::buildMesh(bool buildNeighbors)
 		greatestIndex = *std::max_element(bVerticesWIndices.second.begin(), bVerticesWIndices.second.end()); // optimize this
 	}
 
-	if(vertices.size() && indices.size())
+	if (vertices.size() && indices.size())
 		m_VertexArray = std::make_unique<engine::gl::VertexArray>(vertices, indices);
+	else
+		m_VertexArray.reset();
 
 	if (buildNeighbors)
 	{

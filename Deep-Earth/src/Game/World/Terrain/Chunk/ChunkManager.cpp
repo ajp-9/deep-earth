@@ -27,7 +27,7 @@ void ChunkManager::render(engine::Shader3D& shader)
 	for (auto& chunk : m_ChunkDatabase.getAllChunks())
 		chunk->render(shader);
 
-	//printf("%u\n", m_ChunkDatabase.m_ChunkMeshesQueue.size());
+	printf("%u\n", m_ChunkDatabase.m_ChunkMeshesQueue.size());
 
 	m_ChunkDatabase.buildChunkMeshFromQueue();
 	m_ChunkDatabase.buildChunkMeshFromQueue();
