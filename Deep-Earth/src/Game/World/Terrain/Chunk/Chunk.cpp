@@ -1,15 +1,16 @@
 #include "Chunk.hpp"
 
 #include <iostream>
+#include <algorithm>
 #include "../../../../Engine/Util/Math.hpp"
 
 #define PROFILE
 #include "../../../../Engine/Util/Profile.hpp"
 
-#include "ChunkDatabase.hpp"
+#include "ChunkManager.hpp"
 
-Chunk::Chunk(glm::ivec3 position, NodeManager& nodeManager, ChunkDatabase& chunkDatabase, bool empty)
-	: m_Position(position), m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE)), m_ChunkDatabase(chunkDatabase), m_NodeManager(nodeManager)
+Chunk::Chunk(glm::ivec3 position, NodeManager& nodeManager, ChunkManager& chunkManager, bool empty)
+	: m_Position(position), m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE)), m_ChunkManager(chunkManager), m_NodeManager(nodeManager)
 {
 	if (!empty)
 	{
@@ -20,12 +21,12 @@ Chunk::Chunk(glm::ivec3 position, NodeManager& nodeManager, ChunkDatabase& chunk
 	}
 }
 
-Chunk::Chunk(glm::ivec3& position, std::vector<Node>& nodes, NodeManager& nodeManager, ChunkDatabase& chunkDatabase)
-	: m_Position(position), m_Nodes(nodes),  m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE)), m_ChunkDatabase(chunkDatabase), m_NodeManager(nodeManager)
+Chunk::Chunk(glm::ivec3& position, std::vector<Node>& nodes, NodeManager& nodeManager, ChunkManager& chunkManager)
+	: m_Position(position), m_Nodes(nodes),  m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position * CHUNK_SIZE)), m_ChunkManager(chunkManager), m_NodeManager(nodeManager)
 {}
 
-Chunk::Chunk(glm::ivec3& position, std::vector<std::pair<Node, glm::ivec3>>& nodes, NodeManager& nodeManager, ChunkDatabase& chunkDatabase)
-	: m_Position(position), m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position* CHUNK_SIZE)), m_ChunkDatabase(chunkDatabase), m_NodeManager(nodeManager)
+Chunk::Chunk(glm::ivec3& position, std::vector<std::pair<Node, glm::ivec3>>& nodes, NodeManager& nodeManager, ChunkManager& chunkManager)
+	: m_Position(position), m_TransformationMatrix(engine::math::TransMatrix::createTransformationMatrix(position* CHUNK_SIZE)), m_ChunkManager(chunkManager), m_NodeManager(nodeManager)
 {
 	for (auto& [node, position] : nodes)
 		setNode(node, position);
@@ -34,17 +35,17 @@ Chunk::Chunk(glm::ivec3& position, std::vector<std::pair<Node, glm::ivec3>>& nod
 Chunk::~Chunk()
 {
 	if (!m_ChunkRef_front.expired())
-		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y - 1, m_Position.z), false);
+		m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y - 1, m_Position.z), false);
 	if (!m_ChunkRef_frontRight.expired())
-		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x + 1, m_Position.y, m_Position.z), false);
+		m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x + 1, m_Position.y, m_Position.z), false);
 	if (!m_ChunkRef_back.expired())
-		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y + 1, m_Position.z), false);
+		m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y + 1, m_Position.z), false);
 	if (!m_ChunkRef_frontLeft.expired())
-		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x - 1, m_Position.y, m_Position.z), false);
+		m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x - 1, m_Position.y, m_Position.z), false);
 	if (!m_ChunkRef_top.expired())
-		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z + 1), false);
+		m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z + 1), false);
 	if (!m_ChunkRef_bottom.expired())
-		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z - 1), false);
+		m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z - 1), false);
 }
 
 void Chunk::render(engine::Shader3D& shader)
@@ -66,42 +67,42 @@ void Chunk::addNode(Node& node, glm::ivec3 nodePosition)
 
 	setNode(node, nodePosition);
 
-	m_ChunkDatabase.addChunkMeshToQueue(m_Position, false);
+	m_ChunkManager.addChunkMeshToQueue(m_Position, false);
 
 	// front
 	if (!nodePosition.y)
 	{
-		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y - 1, m_Position.z), false);
+		m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y - 1, m_Position.z), false);
 	}
 
 	// front right
 	if (nodePosition.x == CHUNK_SIZE - 1)
 	{
-		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x + 1, m_Position.y, m_Position.z), false);
+		m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x + 1, m_Position.y, m_Position.z), false);
 	}
 
 	// back
 	if (nodePosition.y == CHUNK_SIZE - 1)
 	{
-		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y + 1, m_Position.z), false);
+		m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y + 1, m_Position.z), false);
 	}
 
 	// front left
 	if (!nodePosition.x)
 	{
-		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x - 1, m_Position.y, m_Position.z), false);
+		m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x - 1, m_Position.y, m_Position.z), false);
 	}
 
 	// top
 	if (nodePosition.z == CHUNK_SIZE - 1)
 	{
-		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z + 1), false);
+		m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z + 1), false);
 	}
 
 	// bottom
 	if (!nodePosition.z)
 	{
-		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z - 1), false);
+		m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z - 1), false);
 	}
 }
 
@@ -109,42 +110,42 @@ void Chunk::removeNode(glm::ivec3 nodePosition)
 {
 	setNode(Node(node::air), nodePosition);
 
-	m_ChunkDatabase.addChunkMeshToQueue(m_Position, false);
+	m_ChunkManager.addChunkMeshToQueue(m_Position, false);
 
 	// front
 	if (!nodePosition.y)
 	{
-		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y - 1, m_Position.z), false);
+		m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y - 1, m_Position.z), false);
 	}
 
 	// front right
 	if (nodePosition.x == CHUNK_SIZE - 1)
 	{
-		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x + 1, m_Position.y, m_Position.z), false);
+		m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x + 1, m_Position.y, m_Position.z), false);
 	}
 
 	// back
 	if (nodePosition.y == CHUNK_SIZE - 1)
 	{
-		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y + 1, m_Position.z), false);
+		m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y + 1, m_Position.z), false);
 	}
 
 	// front left
 	if (!nodePosition.x)
 	{
-		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x - 1, m_Position.y, m_Position.z), false);
+		m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x - 1, m_Position.y, m_Position.z), false);
 	}
 
 	// top
 	if (nodePosition.z == CHUNK_SIZE - 1)
 	{
-		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z + 1), false);
+		m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z + 1), false);
 	}
 
 	// bottom
 	if (!nodePosition.z)
 	{
-		m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z - 1), false);
+		m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z - 1), false);
 	}
 }
 
@@ -179,22 +180,22 @@ void Chunk::setNode(Node node, glm::ivec3 nodePosition)
 void Chunk::getNeighboringChunks(bool buildingMesh)
 {
 	if (m_ChunkRef_front.expired())
-		m_ChunkDatabase.getChunkWCallback(glm::ivec3(m_Position.x, m_Position.y - 1, m_Position.z), m_ChunkRef_front);
+		m_ChunkManager.getChunkWCallback(glm::ivec3(m_Position.x, m_Position.y - 1, m_Position.z), m_ChunkRef_front);
 
 	if (m_ChunkRef_frontRight.expired())
-		m_ChunkDatabase.getChunkWCallback(glm::ivec3(m_Position.x + 1, m_Position.y, m_Position.z), m_ChunkRef_frontRight);
+		m_ChunkManager.getChunkWCallback(glm::ivec3(m_Position.x + 1, m_Position.y, m_Position.z), m_ChunkRef_frontRight);
 
 	if (m_ChunkRef_back.expired())
-		m_ChunkDatabase.getChunkWCallback(glm::ivec3(m_Position.x, m_Position.y + 1, m_Position.z), m_ChunkRef_back);
+		m_ChunkManager.getChunkWCallback(glm::ivec3(m_Position.x, m_Position.y + 1, m_Position.z), m_ChunkRef_back);
 
 	if (m_ChunkRef_frontLeft.expired())
-		m_ChunkDatabase.getChunkWCallback(glm::ivec3(m_Position.x - 1, m_Position.y, m_Position.z), m_ChunkRef_frontLeft);
+		m_ChunkManager.getChunkWCallback(glm::ivec3(m_Position.x - 1, m_Position.y, m_Position.z), m_ChunkRef_frontLeft);
 
 	if (m_ChunkRef_top.expired())
-		m_ChunkDatabase.getChunkWCallback(glm::ivec3(m_Position.x, m_Position.y, m_Position.z + 1), m_ChunkRef_top);
+		m_ChunkManager.getChunkWCallback(glm::ivec3(m_Position.x, m_Position.y, m_Position.z + 1), m_ChunkRef_top);
 
 	if (m_ChunkRef_bottom.expired())
-		m_ChunkDatabase.getChunkWCallback(glm::ivec3(m_Position.x, m_Position.y, m_Position.z - 1), m_ChunkRef_bottom);
+		m_ChunkManager.getChunkWCallback(glm::ivec3(m_Position.x, m_Position.y, m_Position.z - 1), m_ChunkRef_bottom);
 
 	if (buildingMesh)
 	{
@@ -347,27 +348,27 @@ void Chunk::buildMesh(bool buildNeighbors)
 	{
 		if (!m_ChunkRef_front.expired())
 			if (!m_ChunkRef_front.lock()->m_MeshSawMy_back)
-				m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y - 1, m_Position.z), false);
+				m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y - 1, m_Position.z), false);
 
 		if (!m_ChunkRef_frontRight.expired())
 			if (!m_ChunkRef_frontRight.lock()->m_MeshSawMy_frontLeft)
-				m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x + 1, m_Position.y, m_Position.z), false);
+				m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x + 1, m_Position.y, m_Position.z), false);
 
 		if (!m_ChunkRef_back.expired())
 			if (!m_ChunkRef_back.lock()->m_MeshSawMy_front)
-				m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y + 1, m_Position.z), false);
+				m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y + 1, m_Position.z), false);
 
 		if (!m_ChunkRef_frontLeft.expired())
 			if (!m_ChunkRef_frontLeft.lock()->m_MeshSawMy_frontRight)
-				m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x - 1, m_Position.y, m_Position.z), false);
+				m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x - 1, m_Position.y, m_Position.z), false);
 
 		if (!m_ChunkRef_top.expired())
 			if (!m_ChunkRef_top.lock()->m_MeshSawMy_bottom)
-				m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z + 1), false);
+				m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z + 1), false);
 
 		if (!m_ChunkRef_bottom.expired())
 			if (!m_ChunkRef_bottom.lock()->m_MeshSawMy_top)
-				m_ChunkDatabase.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z - 1), false);
+				m_ChunkManager.addChunkMeshToQueue(glm::ivec3(m_Position.x, m_Position.y, m_Position.z - 1), false);
 	}
 }
 

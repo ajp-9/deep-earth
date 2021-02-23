@@ -9,18 +9,18 @@
 #define CHUNK_SIZE 32
 #define CHUNK_VOLUME 32768 // 32*32*32
 
-class ChunkDatabase;
+class ChunkManager;
 
 class Chunk
 {
 public:
 
 	// Blank chunk
-	Chunk(glm::ivec3 position, NodeManager& nodeManager, ChunkDatabase& chunkDatabase, bool empty = false);
+	Chunk(glm::ivec3 position, NodeManager& nodeManager, ChunkManager& chunkManager, bool empty = false);
 	// Everything already packaged up.
-	Chunk(glm::ivec3& position, std::vector<Node>& nodes, NodeManager& nodeManager, ChunkDatabase& chunkDatabase);
+	Chunk(glm::ivec3& position, std::vector<Node>& nodes, NodeManager& nodeManager, ChunkManager& chunkManager);
 	// Unpacked nodes thrown at random.
-	Chunk(glm::ivec3& position, std::vector<std::pair<Node, glm::ivec3>>& nodes, NodeManager& nodeManager, ChunkDatabase& chunkDatabase);
+	Chunk(glm::ivec3& position, std::vector<std::pair<Node, glm::ivec3>>& nodes, NodeManager& nodeManager, ChunkManager& chunkManager);
 	~Chunk();
 
 	void render(engine::Shader3D& shader);
@@ -49,7 +49,7 @@ private:
 
 	glm::mat4 m_TransformationMatrix;
 
-	ChunkDatabase& m_ChunkDatabase;
+	ChunkManager& m_ChunkManager;
 	NodeManager& m_NodeManager;
 
 	std::weak_ptr<Chunk> m_ChunkRef_front;     	 bool m_MeshSawMy_front = false;

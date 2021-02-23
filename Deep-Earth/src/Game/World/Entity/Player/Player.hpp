@@ -30,9 +30,9 @@ private:
 
     bool firstMouse = true;
 
-    const float c_Speed = .1f;
-    const float c_FastSpeed = 2.5f;
-    const float c_Sensitivity = .05f; // change this value to your liking
+    const float c_Speed = .25f;
+    const float c_FastSpeed = 2.0f;
+    const float c_Sensitivity = .05f;
 
     const uint c_TicksWaitTimeForBreakNPlace = 8;
 

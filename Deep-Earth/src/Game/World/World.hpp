@@ -14,7 +14,8 @@ public:
 	World();
 	~World();
 
-	void render(engine::Shader3D& shader, engine::Application& app);
+	void render(engine::Shader3D& shader);
+	void update(engine::Application& app);
 
 private:
 

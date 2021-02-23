@@ -6,11 +6,19 @@ Terrain::Terrain()
 	m_ChunkManager.loadChunks(m_NodeManager, glm::ivec3(0));
 }
 
-void Terrain::render(engine::Shader3D& shader, glm::vec3& playerPos)
+void Terrain::render(engine::Shader3D& shader)
 {
 	m_Atlas.bind();
 	m_ChunkManager.render(shader);
+}
 
+void Terrain::update(glm::vec3& playerPos)
+{
+	loadNUnloadChunks(playerPos);
+}
+
+void Terrain::loadNUnloadChunks(glm::vec3& playerPos)
+{
 	static uint i = 0;
 	i++;
 	if (i == 5)
@@ -18,8 +26,4 @@ void Terrain::render(engine::Shader3D& shader, glm::vec3& playerPos)
 		m_ChunkManager.loadChunks(m_NodeManager, playerPos);
 		i = 0;
 	}
-}
-
-void Terrain::update()
-{
 }

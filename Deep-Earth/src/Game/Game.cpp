@@ -21,8 +21,10 @@ void Game::run()
 {
 	while (m_Engine.m_Running)
 	{
-		m_Shader.bind();
 		m_Engine.update();
-		m_World.render(m_Shader, m_Engine.m_Application);
+		m_World.update(m_Engine.m_Application);
+
+		m_Shader.bind();
+		m_World.render(m_Shader);
 	}
 }

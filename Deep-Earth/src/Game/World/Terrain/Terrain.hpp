@@ -11,8 +11,10 @@ public:
 
 	Terrain();
 
-	void render(engine::Shader3D& shader, glm::vec3& playerPos);
-	void update();
+	void render(engine::Shader3D& shader);
+	void update(glm::vec3& playerPos);
+
+	void loadNUnloadChunks(glm::vec3& playerPos);
 
 	inline ChunkManager& getChunkManager() { return m_ChunkManager; }
 
