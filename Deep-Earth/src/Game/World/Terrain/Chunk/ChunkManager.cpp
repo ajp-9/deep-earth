@@ -5,29 +5,12 @@
 #define PROFILE
 #include "../../../../Engine/Util/Profile.hpp"
 
-#define VIEW_DISTANCE 6
-
-void ChunkManager::loadChunks(NodeManager& nodeManager, glm::vec3 playerPos)
-{
-	for (int x = (playerPos.x / 32) - VIEW_DISTANCE; x < (playerPos.x / 32) + VIEW_DISTANCE; x++) 
-		for (int y = (playerPos.y / 32) - VIEW_DISTANCE; y < (playerPos.y / 32) + VIEW_DISTANCE; y++) 
-			for (int z = 0; z < 1; z++)
-			{
-				if (!hasChunk(glm::ivec3(x, y, z)))
-				{
-					std::shared_ptr<Chunk> chunk = std::make_shared<Chunk>(glm::ivec3(x, y, z), nodeManager, *this);
-					addChunk(chunk);
-					addChunkMeshToQueue(glm::ivec3(x, y, z), true);
-				}
-			}
-}
-
 void ChunkManager::render(engine::Shader3D& shader)
 {	
 	for (auto& chunk : m_Chunks)
 		chunk->render(shader);
 
-	printf("%u\n", m_ChunkMeshesQueue.size());
+	//printf("%u\n", m_ChunkMeshesQueue.size());
 
 	buildChunkMeshFromQueue();
 	buildChunkMeshFromQueue();
@@ -48,6 +31,8 @@ void ChunkManager::addChunk(std::shared_ptr<Chunk> chunk)
 {
 	m_Chunks.emplace_back(chunk);
 	m_ChunkHash[chunk->getPosition()] = chunk;
+
+	addChunkMeshToQueue(chunk->getPosition(), true);
 }
 
 void ChunkManager::removeChunk(glm::ivec3 position)
@@ -99,8 +84,8 @@ bool ChunkManager::addNode(Node node, glm::vec3 specificPosition)
 	else
 	{
 		std::vector<std::pair<Node, glm::ivec3>> nodes = { std::make_pair(node, inChunkNodePosition) };
-		//auto chunk = std::make_shared<Chunk>(chunkPosition, nodes, m_NodeManager, *this);
-		//addChunk(chunk);
+		auto chunk = std::make_shared<Chunk>(chunkPosition, nodes, m_NodeManager, *this);
+		addChunk(chunk);
 
 		return true;
 	}

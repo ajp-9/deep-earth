@@ -5,6 +5,8 @@
 #include "Node/NodeManager.hpp"
 #include "Generation/WorldGenerator.hpp"
 
+#define VIEW_DISTANCE 6
+
 class Terrain
 {
 public:
@@ -19,6 +21,8 @@ public:
 	inline ChunkManager& getChunkManager() { return m_ChunkManager; }
 
 private:
+
+	WorldGenerator m_WorldGenerator;
 
 	NodeManager m_NodeManager;
 	ChunkManager m_ChunkManager;

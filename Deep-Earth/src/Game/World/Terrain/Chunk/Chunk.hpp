@@ -49,8 +49,8 @@ private:
 
 	glm::mat4 m_TransformationMatrix;
 
-	ChunkManager& m_ChunkManager;
 	NodeManager& m_NodeManager;
+	ChunkManager& m_ChunkManager;
 
 	std::weak_ptr<Chunk> m_ChunkRef_front;     	 bool m_MeshSawMy_front = false;
 	std::weak_ptr<Chunk> m_ChunkRef_frontRight;	 bool m_MeshSawMy_frontRight = false;

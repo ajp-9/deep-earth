@@ -18,8 +18,6 @@ public:
 		m_Chunks.clear();
 	}
 
-	void loadChunks(NodeManager& nodeManager, glm::vec3 playerPos);
-
 	void render(engine::Shader3D& shader);
 	void update();
 	void tick();

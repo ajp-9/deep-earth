@@ -1,10 +1,8 @@
 #include "Terrain.hpp"
 
 Terrain::Terrain()
-	: m_ChunkManager(m_NodeManager), m_Atlas("res/textures/atlas.png")
-{
-	m_ChunkManager.loadChunks(m_NodeManager, glm::ivec3(0));
-}
+	: m_ChunkManager(m_NodeManager), m_Atlas("res/textures/atlas.png"), m_WorldGenerator(0, m_NodeManager, m_ChunkManager)
+{}
 
 void Terrain::render(engine::Shader3D& shader)
 {
@@ -23,7 +21,16 @@ void Terrain::loadNUnloadChunks(glm::vec3& playerPos)
 	i++;
 	if (i == 5)
 	{
-		m_ChunkManager.loadChunks(m_NodeManager, playerPos);
+		for (int x = (playerPos.x / 32) - VIEW_DISTANCE; x < (playerPos.x / 32) + VIEW_DISTANCE; x++)
+			for (int y = (playerPos.y / 32) - VIEW_DISTANCE; y < (playerPos.y / 32) + VIEW_DISTANCE; y++)
+				for (int z = 0; z < 1; z++)
+				{
+					if (!m_ChunkManager.hasChunk(glm::ivec3(x, y, z)))
+					{
+						m_WorldGenerator.generateChunk(glm::ivec3(x, y, z));
+					}
+				}
+
 		i = 0;
 	}
 }
