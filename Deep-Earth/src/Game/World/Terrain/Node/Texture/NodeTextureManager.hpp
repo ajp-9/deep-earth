@@ -21,6 +21,7 @@ public:
 	NodeTextureManager();
 
 	static float getWCoord(byte id);
+	void bind();
 
 private:
 

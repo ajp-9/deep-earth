@@ -23,6 +23,7 @@ struct NodeManager
 
 	Node getNode(uint id);
 	const std::unique_ptr<NodeType>& getNodeType(uint id);
+	void bindTextures();
 
 private:
 
