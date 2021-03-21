@@ -51,17 +51,25 @@ void ChunkManager::removeChunk(glm::ivec3 position)
 
 bool ChunkManager::addNode(Node node, glm::vec3 specificPosition)
 {
-	glm::ivec3 nodePosition = glm::ivec3((int)std::floor(specificPosition.x + .5f),
+	glm::ivec3 nodePosition = glm::ivec3
+	(
+		(int)std::floor(specificPosition.x + .5f),
 		(int)std::floor(specificPosition.y + .5f),
-		(int)std::floor(specificPosition.z + .5f));
+		(int)std::floor(specificPosition.z + .5f)
+	);
 
-	glm::ivec3 chunkPosition = glm::ivec3((int)std::floor(float(nodePosition.x) / float((CHUNK_SIZE))),
+	glm::ivec3 chunkPosition = glm::ivec3
+	(
+		(int)std::floor(float(nodePosition.x) / float((CHUNK_SIZE))),
 		(int)std::floor(float(nodePosition.y) / float((CHUNK_SIZE))),
 		(int)std::floor(float(nodePosition.z) / float((CHUNK_SIZE))));
 
-	glm::ivec3 inChunkNodePosition = glm::ivec3(nodePosition.x - (chunkPosition.x * (CHUNK_SIZE)),
+	glm::ivec3 inChunkNodePosition = glm::ivec3
+	(
+		nodePosition.x - (chunkPosition.x * (CHUNK_SIZE)),
 		nodePosition.y - (chunkPosition.y * (CHUNK_SIZE)),
-		nodePosition.z - (chunkPosition.z * (CHUNK_SIZE)));
+		nodePosition.z - (chunkPosition.z * (CHUNK_SIZE))
+	);
 
 	std::weak_ptr<Chunk> chunk;
 	getChunkWCallback(chunkPosition, chunk);
@@ -93,17 +101,26 @@ bool ChunkManager::addNode(Node node, glm::vec3 specificPosition)
 
 bool ChunkManager::removeNode(glm::vec3 specificPosition)
 {
-	glm::ivec3 nodePosition = glm::ivec3((int)std::floor(specificPosition.x + .5f),
+	glm::ivec3 nodePosition = glm::ivec3
+	(
+		(int)std::floor(specificPosition.x + .5f),
 		(int)std::floor(specificPosition.y + .5f),
-		(int)std::floor(specificPosition.z + .5f));
+		(int)std::floor(specificPosition.z + .5f)
+	);
 
-	glm::ivec3 chunkPosition = glm::ivec3((int)std::floor(float(nodePosition.x) / float((CHUNK_SIZE))),
+	glm::ivec3 chunkPosition = glm::ivec3
+	(
+		(int)std::floor(float(nodePosition.x) / float((CHUNK_SIZE))),
 		(int)std::floor(float(nodePosition.y) / float((CHUNK_SIZE))),
-		(int)std::floor(float(nodePosition.z) / float((CHUNK_SIZE))));
+		(int)std::floor(float(nodePosition.z) / float((CHUNK_SIZE)))
+	);
 
-	glm::ivec3 inChunkNodePosition = glm::ivec3(nodePosition.x - (chunkPosition.x * (CHUNK_SIZE)),
+	glm::ivec3 inChunkNodePosition = glm::ivec3
+	(
+		nodePosition.x - (chunkPosition.x * (CHUNK_SIZE)),
 		nodePosition.y - (chunkPosition.y * (CHUNK_SIZE)),
-		nodePosition.z - (chunkPosition.z * (CHUNK_SIZE)));
+		nodePosition.z - (chunkPosition.z * (CHUNK_SIZE))
+	);
 
 	std::weak_ptr<Chunk> chunk;
 	getChunkWCallback(chunkPosition, chunk);
@@ -129,17 +146,26 @@ bool ChunkManager::removeNode(glm::vec3 specificPosition)
 
 const Node ChunkManager::getNode(glm::vec3 specificPosition)
 {
-	glm::ivec3 nodePosition = glm::ivec3((int)std::floor(specificPosition.x + .5f),
+	glm::ivec3 nodePosition = glm::ivec3
+	(
+		(int)std::floor(specificPosition.x + .5f),
 		(int)std::floor(specificPosition.y + .5f),
-		(int)std::floor(specificPosition.z + .5f));
+		(int)std::floor(specificPosition.z + .5f)
+	);
 
-	glm::ivec3 chunkPosition = glm::ivec3((int)std::floor(float(nodePosition.x) / float((CHUNK_SIZE))),
+	glm::ivec3 chunkPosition = glm::ivec3
+	(
+		(int)std::floor(float(nodePosition.x) / float((CHUNK_SIZE))),
 		(int)std::floor(float(nodePosition.y) / float((CHUNK_SIZE))),
-		(int)std::floor(float(nodePosition.z) / float((CHUNK_SIZE))));
+		(int)std::floor(float(nodePosition.z) / float((CHUNK_SIZE)))
+	);
 
-	glm::ivec3 inChunkNodePosition = glm::ivec3(nodePosition.x - (chunkPosition.x * (CHUNK_SIZE)),
+	glm::ivec3 inChunkNodePosition = glm::ivec3
+	(
+		nodePosition.x - (chunkPosition.x * (CHUNK_SIZE)),
 		nodePosition.y - (chunkPosition.y * (CHUNK_SIZE)),
-		nodePosition.z - (chunkPosition.z * (CHUNK_SIZE)));
+		nodePosition.z - (chunkPosition.z * (CHUNK_SIZE))
+	);
 
 	std::weak_ptr<Chunk> chunk;
 	getChunkWCallback(chunkPosition, chunk);
@@ -152,13 +178,19 @@ const Node ChunkManager::getNode(glm::vec3 specificPosition)
 
 const Node ChunkManager::getNode(glm::ivec3 nodePosition)
 {
-	glm::ivec3 chunkPosition = glm::ivec3((int)std::floor(float(nodePosition.x) / float((CHUNK_SIZE))),
+	glm::ivec3 chunkPosition = glm::ivec3
+	(
+		(int)std::floor(float(nodePosition.x) / float((CHUNK_SIZE))),
 		(int)std::floor(float(nodePosition.y) / float((CHUNK_SIZE))),
-		(int)std::floor(float(nodePosition.z) / float((CHUNK_SIZE))));
+		(int)std::floor(float(nodePosition.z) / float((CHUNK_SIZE)))
+	);
 
-	glm::ivec3 inChunkNodePosition = glm::ivec3(nodePosition.x - (chunkPosition.x * (CHUNK_SIZE)),
+	glm::ivec3 inChunkNodePosition = glm::ivec3
+	(
+		nodePosition.x - (chunkPosition.x * (CHUNK_SIZE)),
 		nodePosition.y - (chunkPosition.y * (CHUNK_SIZE)),
-		nodePosition.z - (chunkPosition.z * (CHUNK_SIZE)));
+		nodePosition.z - (chunkPosition.z * (CHUNK_SIZE))
+	);
 
 	std::weak_ptr<Chunk> chunk;
 	getChunkWCallback(chunkPosition, chunk);
@@ -225,4 +257,21 @@ bool ChunkManager::hasChunk(glm::vec3 position)
 		return true;
 	else
 		return false;
+}
+
+glm::ivec3 ChunkManager::getChunkPositionFromVec3(glm::vec3& specificPosition)
+{
+	glm::ivec3 nodePosition = glm::ivec3
+	(
+		(int)std::floor(specificPosition.x + .5f),
+		(int)std::floor(specificPosition.y + .5f),
+		(int)std::floor(specificPosition.z + .5f)
+	);
+
+	return glm::ivec3
+	(
+		(int)std::floor(float(nodePosition.x) / float((CHUNK_SIZE))),
+		(int)std::floor(float(nodePosition.y) / float((CHUNK_SIZE))),
+		(int)std::floor(float(nodePosition.z) / float((CHUNK_SIZE)))
+	);
 }

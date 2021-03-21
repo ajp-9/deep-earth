@@ -22,3 +22,8 @@ const std::unique_ptr<NodeType>& NodeManager::getNodeType(uint id)
 {
 	return m_NodeTypes.at(id);
 }
+
+void NodeManager::bindTextures()
+{
+	m_NodeTextureManager.bind();
+}

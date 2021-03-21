@@ -22,7 +22,5 @@ void WorldGenerator::generateChunk(glm::ivec3 position)
 		}
 	}
 
-
-	std::cout << (int) 5 * glm::perlin(glm::vec3(7, 5, c_Seed * 2)) * 5 << std::endl;
 	m_ChunkManager.addChunk(chunk);
 }

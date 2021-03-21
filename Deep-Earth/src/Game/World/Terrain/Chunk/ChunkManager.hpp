@@ -46,6 +46,8 @@ public:
 
 	bool hasChunk(glm::vec3 position);
 
+	glm::ivec3 getChunkPositionFromVec3(glm::vec3& specificPosition);
+
 private:
 
 	std::vector<std::shared_ptr<Chunk>> m_Chunks;
@@ -53,6 +55,7 @@ private:
 	std::unordered_map<glm::ivec3, std::weak_ptr<Chunk>> m_ChunkHash;
 
 	std::vector<std::pair<glm::ivec3, bool>> m_ChunkMeshesQueue;
+	std::vector<glm::ivec3> m_GenerationQueue;
 
 	NodeManager& m_NodeManager;
 };

@@ -16,7 +16,8 @@ public:
 	void render(engine::Shader3D& shader);
 	void update(glm::vec3& playerPos);
 
-	void loadNUnloadChunks(glm::vec3& playerPos);
+	void loadChunks(glm::vec3& playerPos);
+	void unloadChunks(glm::vec3& playerPos);
 
 	inline ChunkManager& getChunkManager() { return m_ChunkManager; }
 
@@ -27,5 +28,5 @@ private:
 	NodeManager m_NodeManager;
 	ChunkManager m_ChunkManager;
 
-	engine::Texture m_Atlas;
+	glm::ivec3 m_PlayerLastChunkPos;
 };
